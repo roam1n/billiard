@@ -1,0 +1,75 @@
+[gd_scene load_steps=11 format=3 uid="uid://dw21h73cgee8"]
+
+[ext_resource type="Script" path="res://scripts/border.gd" id="1_waweh"]
+[ext_resource type="PackedScene" uid="uid://buomutnqf16ej" path="res://Elements/cueBall.tscn" id="3_ci64l"]
+[ext_resource type="Script" path="res://scripts/camera2D.gd" id="3_tg8xy"]
+[ext_resource type="PackedScene" uid="uid://270fi8jto1i5" path="res://Elements/objectBall.tscn" id="4_hnerw"]
+[ext_resource type="PackedScene" uid="uid://bkg17ao76swlq" path="res://Elements/main.tscn" id="5_6fx04"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_x25y8"]
+bounce = 0.3
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_276ug"]
+size = Vector2(810, 120)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ij2se"]
+size = Vector2(120, 768)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_01q1c"]
+size = Vector2(810, 120)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jkva8"]
+size = Vector2(120, 768)
+
+[node name="1-1" type="Node2D"]
+
+[node name="border" type="StaticBody2D" parent="."]
+physics_material_override = SubResource("PhysicsMaterial_x25y8")
+script = ExtResource("1_waweh")
+
+[node name="background" type="ColorRect" parent="border"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 120.0
+offset_top = 120.0
+offset_right = 810.0
+offset_bottom = 768.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+color = Color(0.054902, 0.109804, 0.109804, 1)
+
+[node name="top" type="CollisionShape2D" parent="border"]
+position = Vector2(525, 60)
+shape = SubResource("RectangleShape2D_276ug")
+
+[node name="right" type="CollisionShape2D" parent="border"]
+position = Vector2(870, 504)
+shape = SubResource("RectangleShape2D_ij2se")
+
+[node name="bottom" type="CollisionShape2D" parent="border"]
+position = Vector2(405, 828)
+shape = SubResource("RectangleShape2D_01q1c")
+
+[node name="left" type="CollisionShape2D" parent="border"]
+position = Vector2(60, 384)
+shape = SubResource("RectangleShape2D_jkva8")
+
+[node name="objectBall" parent="." instance=ExtResource("4_hnerw")]
+position = Vector2(481, 408)
+
+[node name="cutBall" parent="." instance=ExtResource("3_ci64l")]
+position = Vector2(621, 540)
+
+[node name="Camera2D" type="Camera2D" parent="cutBall"]
+limit_smoothed = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+script = ExtResource("3_tg8xy")
+
+[node name="Main" parent="." instance=ExtResource("5_6fx04")]
+
+[connection signal="ball_inactive" from="cutBall" to="Main" method="_on_cut_ball_ball_inactive"]
+[connection signal="ball_running" from="cutBall" to="Main" method="_on_cut_ball_running"]
