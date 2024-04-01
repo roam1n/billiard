@@ -22,6 +22,7 @@ var level_name:StringName = "1-1"
 func _ready() -> void:
 	level_complete.hide()
 	level_name = get_parent().name
+	%LevelName.set_text(level_name)
 	_pole_nodes = [%HigtPole, %MediumPole, %LowPole, %JumpPole]
 	_on_select_pole()
 

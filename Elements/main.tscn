@@ -133,6 +133,15 @@ theme = ExtResource("2_tfy1f")
 icon = ExtResource("4_lbv0y")
 flat = true
 
+[node name="LevelName" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = 117.0
+offset_top = 31.0
+offset_right = 176.0
+offset_bottom = 86.0
+theme = ExtResource("2_tfy1f")
+text = "1-1"
+
 [connection signal="button_down" from="VBoxContainer/HigtPole" to="." method="_on_higt_pole_button_down"]
 [connection signal="button_down" from="VBoxContainer/MediumPole" to="." method="_on_medium_pole_button_down"]
 [connection signal="button_down" from="VBoxContainer/LowPole" to="." method="_on_low_pole_button_down"]
