@@ -2,6 +2,7 @@ extends RigidBody2D
 
 
 @export var custom_color := Color.ANTIQUE_WHITE;
+@export var is_level := true
 
 enum Status {WAIT, RUNNING, INACTIVE, DONE, SUBTOTAL}
 enum PoleSelect {HIGH, MEDIUM, LOW, JUMP, NONE}
@@ -35,12 +36,12 @@ func _transform() -> void:
 	if _status == Status.WAIT:
 		if Input.is_action_just_pressed("left_mouse"):
 			_wait_to_running()
-		elif Input.is_action_just_pressed("right_mouse"):
+		elif Input.is_action_just_pressed("right_mouse") and is_level:
 			_wait_to_inactive()
 	elif _status == Status.RUNNING:
 		if linear_velocity.length() < 20:
 			_running_to_subtotal()
-		elif Input.is_action_just_pressed("right_mouse"):
+		elif Input.is_action_just_pressed("right_mouse") and is_level:
 			_wait_to_inactive()
 	elif _status == Status.INACTIVE:
 		if not _is_time_stop and linear_velocity.length() < 20:
@@ -95,7 +96,8 @@ func _subtotal_to_wait():
 	$Mouse.show()
 
 # level scene 中绑定 Main 信号 selected_pole
-func _on_main_selected_pole(pole: int) -> void:
+func _on_main_selected_pole(pole: PoleSelect) -> void:
+	_pole_select = pole
 	_is_time_stop = false
 
 # level scene 中绑定 Main 信号 subtotal_completed

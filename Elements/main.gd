@@ -94,3 +94,7 @@ func _change_batting_score_label() -> void:
 func _on_cut_ball_done() -> void:
 	level_complete.show()
 	print("level done")
+
+
+func _on_back_pressed() -> void:
+	get_tree().change_scene_to_file("res://start.tscn")

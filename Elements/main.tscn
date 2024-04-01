@@ -1,8 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://bkg17ao76swlq"]
+[gd_scene load_steps=7 format=3 uid="uid://bkg17ao76swlq"]
 
 [ext_resource type="Script" path="res://Elements/main.gd" id="1_qlt8a"]
 [ext_resource type="Theme" uid="uid://b0f6o3jmgrqt" path="res://resources/theme.tres" id="2_tfy1f"]
 [ext_resource type="ButtonGroup" uid="uid://cwlay0majv5p2" path="res://resources/poles.tres" id="3_xun7a"]
+[ext_resource type="Texture2D" uid="uid://cx2xuuotosie" path="res://assets/back.png" id="4_lbv0y"]
+[ext_resource type="Shader" uid="uid://b06mqbbofqqob" path="res://resources/mouse.tres" id="4_lnhq8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mxn5w"]
+shader = ExtResource("4_lnhq8")
 
 [node name="Main" type="CanvasLayer"]
 script = ExtResource("1_qlt8a")
@@ -117,7 +122,19 @@ text = "重来
 layout_mode = 2
 text = "下一关"
 
+[node name="Back" type="Button" parent="."]
+material = SubResource("ShaderMaterial_mxn5w")
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 528.0
+offset_bottom = 528.0
+scale = Vector2(0.18, 0.18)
+theme = ExtResource("2_tfy1f")
+icon = ExtResource("4_lbv0y")
+flat = true
+
 [connection signal="button_down" from="VBoxContainer/HigtPole" to="." method="_on_higt_pole_button_down"]
 [connection signal="button_down" from="VBoxContainer/MediumPole" to="." method="_on_medium_pole_button_down"]
 [connection signal="button_down" from="VBoxContainer/LowPole" to="." method="_on_low_pole_button_down"]
 [connection signal="button_down" from="VBoxContainer/JumpPole" to="." method="_on_jump_pole_button_down"]
+[connection signal="pressed" from="Back" to="." method="_on_back_pressed"]
