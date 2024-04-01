@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://cntlro8d45gwl"]
+
+[ext_resource type="Texture2D" uid="uid://xtrjg3heynnw" path="res://assets/area.png" id="1_js6md"]
+[ext_resource type="Shader" path="res://resources/area.gdshader" id="1_q607m"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_twpir"]
+size = Vector2(220, 160)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ert56"]
+shader = ExtResource("1_q607m")
+
+[node name="BonusArea" type="Area2D" groups=["bonusAreas"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_twpir")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_ert56")
+texture = ExtResource("1_js6md")

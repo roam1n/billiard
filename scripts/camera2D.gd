@@ -1,6 +1,7 @@
 extends Camera2D
 
-@onready var border: StaticBody2D = $"../../border";
+
+@onready var border: StaticBody2D = %Border
 
 func _ready() -> void:
 	var limit_size:Vector4 = border.get_border()
