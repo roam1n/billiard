@@ -41,13 +41,13 @@ metadata/_edit_use_anchors_ = true
 [node name="Start" parent="ColorRect" instance=ExtResource("3_ugu61")]
 position = Vector2(220, 120)
 
-[node name="Continue" parent="ColorRect" instance=ExtResource("3_ugu61")]
+[node name="SelectLevel" parent="ColorRect" instance=ExtResource("3_ugu61")]
 position = Vector2(220, 528)
-text = "继续游戏"
+text = "选择关卡"
 
 [node name="CueBall" parent="." instance=ExtResource("1_203ns")]
 position = Vector2(1219, 483)
 is_level = false
 
 [connection signal="body_entered" from="ColorRect/Start" to="." method="_on_start_body_entered"]
-[connection signal="body_entered" from="ColorRect/Continue" to="." method="_on_continue_body_entered"]
+[connection signal="body_entered" from="ColorRect/SelectLevel" to="." method="_on_select_level_body_entered"]

@@ -1,5 +1,6 @@
 extends CanvasLayer
 
+# Main的父节点一定是level
 
 @onready var batting_score: Label = %BattingScore
 @onready var batting_count: Label = %BattingCount
@@ -15,10 +16,12 @@ var _is_selecting:bool = false
 var _selected_pole := PoleSelect.HIGH
 var _batting_score := 0
 var _batting_count := 0
-var _pole_nodes = []
+var _pole_nodes := []
+var level_name:StringName = "1-1"
 
 func _ready() -> void:
 	level_complete.hide()
+	level_name = get_parent().name
 	_pole_nodes = [%HigtPole, %MediumPole, %LowPole, %JumpPole]
 	_on_select_pole()
 
@@ -93,8 +96,8 @@ func _change_batting_score_label() -> void:
 
 func _on_cut_ball_done() -> void:
 	level_complete.show()
+	SaverLoader.save_game(level_name, _batting_score, _batting_count)
 	print("level done")
-
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://start.tscn")
