@@ -66,7 +66,6 @@ func _running_to_subtotal():
 	_status = Status.SUBTOTAL
 	_is_calculating_subtotal = true
 	ball_stop_running.emit()
-	$Mouse.show()
 
 func _wait_to_inactive():
 	Engine.time_scale = 0
@@ -89,11 +88,11 @@ func _inactive_to_running():
 func _subtotal_to_done():
 	_status = Status.DONE
 	ball_done.emit()
-	$Mouse.hide()
 
 func _subtotal_to_wait():
-	_status = Status.SUBTOTAL
+	_status = Status.WAIT
 	ball_wait.emit()
+	$Mouse.show()
 
 # level scene 中绑定 Main 信号 selected_pole
 func _on_main_selected_pole(pole: int) -> void:
