@@ -42,6 +42,7 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 color = Color(0.054902, 0.109804, 0.109804, 1)
+metadata/_edit_use_anchors_ = true
 
 [node name="top" type="CollisionShape2D" parent="Border"]
 position = Vector2(846, -30)
@@ -84,4 +85,3 @@ position = Vector2(243, 213)
 [connection signal="ball_running" from="CutBall" to="Main" method="_on_cut_ball_running"]
 [connection signal="ball_stop_running" from="CutBall" to="Main" method="_on_cut_ball_stop_running"]
 [connection signal="selected_pole" from="Main" to="CutBall" method="_on_main_selected_pole"]
-[connection signal="subtotal_completed" from="Main" to="CutBall" method="_on_main_subtotal_completed"]

@@ -1,0 +1,84 @@
+[gd_scene load_steps=13 format=3 uid="uid://cshgvertebhpn"]
+
+[ext_resource type="Script" path="res://LevelScenes/level.gd" id="1_qovfb"]
+[ext_resource type="Script" path="res://scripts/border.gd" id="2_n6hcb"]
+[ext_resource type="PackedScene" uid="uid://buomutnqf16ej" path="res://Elements/cueBall.tscn" id="3_6vxp4"]
+[ext_resource type="Script" path="res://scripts/camera2D.gd" id="4_v3fpb"]
+[ext_resource type="PackedScene" uid="uid://270fi8jto1i5" path="res://Elements/objectBall.tscn" id="5_icxgc"]
+[ext_resource type="PackedScene" uid="uid://cntlro8d45gwl" path="res://Elements/bonusArea.tscn" id="6_dgvv5"]
+[ext_resource type="PackedScene" uid="uid://bkg17ao76swlq" path="res://Elements/main.tscn" id="7_xeiji"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wom6v"]
+bounce = 0.3
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rb8hr"]
+size = Vector2(1452, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c60rx"]
+size = Vector2(300, 948)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c23sq"]
+size = Vector2(1452, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vfe35"]
+size = Vector2(300, 948)
+
+[node name="level_1-2" type="Node2D"]
+script = ExtResource("1_qovfb")
+
+[node name="Border" type="StaticBody2D" parent="."]
+unique_name_in_owner = true
+physics_material_override = SubResource("PhysicsMaterial_wom6v")
+script = ExtResource("2_n6hcb")
+
+[node name="background" type="ColorRect" parent="Border"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 120.0
+offset_top = 120.0
+offset_right = 1272.0
+offset_bottom = 768.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+color = Color(0.054902, 0.109804, 0.109804, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="top" type="CollisionShape2D" parent="Border"]
+position = Vector2(846, -30)
+shape = SubResource("RectangleShape2D_rb8hr")
+
+[node name="right" type="CollisionShape2D" parent="Border"]
+position = Vector2(1422, 594)
+shape = SubResource("RectangleShape2D_c60rx")
+
+[node name="bottom" type="CollisionShape2D" parent="Border"]
+position = Vector2(546, 918)
+shape = SubResource("RectangleShape2D_c23sq")
+
+[node name="left" type="CollisionShape2D" parent="Border"]
+position = Vector2(-30, 294)
+shape = SubResource("RectangleShape2D_vfe35")
+
+[node name="CueBall" parent="." instance=ExtResource("3_6vxp4")]
+position = Vector2(900, 600)
+
+[node name="Camera2D" type="Camera2D" parent="CueBall"]
+position = Vector2(-34, -114)
+limit_smoothed = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+script = ExtResource("4_v3fpb")
+
+[node name="ObjectBall" parent="." instance=ExtResource("5_icxgc")]
+position = Vector2(590, 412)
+
+[node name="BonusArea" parent="." instance=ExtResource("6_dgvv5")]
+position = Vector2(250, 561)
+
+[node name="BonusArea2" parent="." instance=ExtResource("6_dgvv5")]
+position = Vector2(243, 213)
+
+[node name="Main" parent="." instance=ExtResource("7_xeiji")]
