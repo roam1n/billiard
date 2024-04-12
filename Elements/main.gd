@@ -2,8 +2,8 @@ extends CanvasLayer
 
 # Main的父节点一定是level
 @export var levels:Array[String] = [
-	"res://LevelScenes/level_1-1.tscn",
-	"res://LevelScenes/level_1-2.tscn"
+	"res://LevelScenes/level1-1.tscn",
+	"res://LevelScenes/level1-2.tscn"
 ]
 
 @onready var batting_score: Label = %BattingScore
@@ -97,10 +97,10 @@ func _change_batting_score_label(new_batting_score, new_batting_count) -> void:
 	batting_count.set_text("次数：%d" % new_batting_count)
 	print("updated_score")
 
-func _level_done(level_name, _batting_score, _batting_count) -> void:
+func _level_done(_current_level_name, _batting_score, _batting_count) -> void:
 	level_complete.show()
-	SaverLoader.save_game(level_name, _batting_score, _batting_count)
-	print("level done")
+	SaverLoader.save_game(_current_level_name, _batting_score, _batting_count)
+	print("level done",_current_level_name)
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://start.tscn")
@@ -111,26 +111,18 @@ func show_popup_game_over() -> void:
 
 #加载下一关
 func next_level() -> void:
+	#将当前关所在大关遍历，如当前大关号及尾号+1存在则进入该关卡，否则进入到下一大关第一关
 	if levels.size() -1 > current_level_index:
 		current_level_index += 1
-		print("faeeeeeeeeeeeeee", current_level_index)
 		#levels[current_level_index].instantiate()
 		call_deferred("queue_free")
-		print("trrrrrrrrrrr", current_level_index)
-		var new_scene_path = "res://LevelScenes/level_1-2.tscn"
+		print("trrrrrrrrrrr", get_parent().name)
+		var new_scene_path = "res://LevelScenes/level1-2.tscn"
 		get_tree().change_scene_to_file(new_scene_path)
-		#var next_scene = levels[current_level_index]
-		#var instance = next_scene.instantiate()
-		#get_parent().add_child(instance)
-		#get_tree().change_scene("res://LevelScenes/level_1-2.tscn")
-		#get_tree().change_scene_to_file("res://LevelScenes/level_1-2.tscn")
-		#get_tree().change_scene_to_packed(levels[1]) 
 		
 #加载当前关卡		
 func load_level() -> void:
-	#current_level = levels[current_level_index].instantiate()
-	#print("ccccccccc",current_level)
-	var scene_path = get_tree().current_scene
+	#var scene_path = get_tree().current_scene
 	get_tree().reload_current_scene()
 	print("acccccccccc")
 	

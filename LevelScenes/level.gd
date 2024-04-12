@@ -29,7 +29,7 @@ var _is_time_stop := false
 var _is_calculating_subtotal := false
 var _batting_score := 0
 var _batting_count := 0
-var level_name:StringName = "level_1-1"
+var level_name:StringName = ""
 
 signal successed
 signal failing	
@@ -40,10 +40,10 @@ func _ready() -> void:
 	#cueball = game_cueball.instantiate()
 	print("bbbbbbb")
 	
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	cueball._cue_position()
 	
-func _process(delta):
+func _process(_delta):
 	if game_state == Status.WAITING:
 		waiting()
 	if game_state == Status.RUNNING:
@@ -81,16 +81,7 @@ func subtotal() ->void:
 				#少个判断成功和失败的逻辑，以及发射成功失败信号
 				_success_or_fail_result()
 				print("2222")
-				var next_scene = "res://LevelScenes/level_1-2.tscn"
-			#if next_scene:
-				print("fgggggggggggg", next_scene)
-				#var new_scene_path = "res://LevelScenes/level_1-2.tscn"
-				#get_tree().change_scene_to_file(new_scene_path)
-				#var new_scene = ResourceLoader.load(new_scene_path)
-				#if new_scene:
-					#get_tree().call_deferred("change_scene", new_scene)
-				#else:
-					#print("Failed to load new scene at path: " + new_scene_path)
+
 func _wait_to_running(): 
 	game_state = Status.RUNNING
 	cueball._in_running()
@@ -120,6 +111,7 @@ func _inactive_to_running():
 
 func _subtotal_to_done():
 	game_state = Status.DONE
+	level_name = name
 	emit_signal("level_to_main_done", level_name, _batting_score, _batting_count)	
 
 func _subtotal_to_wait():

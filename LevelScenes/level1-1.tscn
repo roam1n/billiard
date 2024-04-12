@@ -1,12 +1,12 @@
 [gd_scene load_steps=13 format=3 uid="uid://bk27in86hp2q2"]
 
-[ext_resource type="Script" path="res://LevelScenes/level.gd" id="1_l7lm4"]
-[ext_resource type="Script" path="res://scripts/border.gd" id="2_mvh5e"]
-[ext_resource type="PackedScene" uid="uid://buomutnqf16ej" path="res://Elements/cueBall.tscn" id="3_h0bif"]
-[ext_resource type="Script" path="res://scripts/camera2D.gd" id="4_0hwph"]
-[ext_resource type="PackedScene" uid="uid://270fi8jto1i5" path="res://Elements/objectBall.tscn" id="5_pg2yk"]
-[ext_resource type="PackedScene" uid="uid://cntlro8d45gwl" path="res://Elements/bonusArea.tscn" id="6_l4mf7"]
-[ext_resource type="PackedScene" uid="uid://bkg17ao76swlq" path="res://Elements/main.tscn" id="7_wdhh6"]
+[ext_resource type="Script" path="res://LevelScenes/level.gd" id="1_s220g"]
+[ext_resource type="Script" path="res://scripts/border.gd" id="2_u1bqy"]
+[ext_resource type="PackedScene" uid="uid://buomutnqf16ej" path="res://Elements/cueBall.tscn" id="3_ji40o"]
+[ext_resource type="Script" path="res://scripts/camera2D.gd" id="4_bcl50"]
+[ext_resource type="PackedScene" uid="uid://270fi8jto1i5" path="res://Elements/objectBall.tscn" id="5_bibku"]
+[ext_resource type="PackedScene" uid="uid://cntlro8d45gwl" path="res://Elements/bonusArea.tscn" id="6_cjey6"]
+[ext_resource type="PackedScene" uid="uid://bkg17ao76swlq" path="res://Elements/main.tscn" id="7_21u8p"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wom6v"]
 bounce = 0.3
@@ -23,13 +23,13 @@ size = Vector2(1452, 300)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vfe35"]
 size = Vector2(300, 948)
 
-[node name="level_1-1" type="Node2D"]
-script = ExtResource("1_l7lm4")
+[node name="level1-1" type="Node2D"]
+script = ExtResource("1_s220g")
 
 [node name="Border" type="StaticBody2D" parent="."]
 unique_name_in_owner = true
 physics_material_override = SubResource("PhysicsMaterial_wom6v")
-script = ExtResource("2_mvh5e")
+script = ExtResource("2_u1bqy")
 
 [node name="background" type="ColorRect" parent="Border"]
 anchors_preset = 15
@@ -62,7 +62,7 @@ shape = SubResource("RectangleShape2D_c23sq")
 position = Vector2(-30, 294)
 shape = SubResource("RectangleShape2D_vfe35")
 
-[node name="CueBall" parent="." instance=ExtResource("3_h0bif")]
+[node name="CueBall" parent="." instance=ExtResource("3_ji40o")]
 position = Vector2(900, 600)
 
 [node name="Camera2D" type="Camera2D" parent="CueBall"]
@@ -70,15 +70,15 @@ position = Vector2(-44, -114)
 limit_smoothed = true
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
-script = ExtResource("4_0hwph")
+script = ExtResource("4_bcl50")
 
-[node name="ObjectBall" parent="." instance=ExtResource("5_pg2yk")]
+[node name="ObjectBall" parent="." instance=ExtResource("5_bibku")]
 position = Vector2(590, 412)
 
-[node name="BonusArea" parent="." instance=ExtResource("6_l4mf7")]
+[node name="BonusArea" parent="." instance=ExtResource("6_cjey6")]
 position = Vector2(250, 561)
 
-[node name="BonusArea2" parent="." instance=ExtResource("6_l4mf7")]
+[node name="BonusArea2" parent="." instance=ExtResource("6_cjey6")]
 position = Vector2(243, 213)
 
-[node name="Main" parent="." instance=ExtResource("7_wdhh6")]
+[node name="Main" parent="." instance=ExtResource("7_21u8p")]

@@ -4,7 +4,7 @@ class_name SavedGame
 
 #@export var latest_level:String
 @export var levels_data:Dictionary
-var latest_level: String = "level_1-1"
+var latest_level: String = ""
 
 func set_level_data(name:StringName, score:int, count:int) -> void:
 	levels_data[name] = {score:score, count:count}

@@ -16,7 +16,7 @@ const MAX_RADIUS := 324
 var _velocity := Vector2(0.0, 0.0)
 var _pole_select := PoleSelect.HIGH
 var _is_time_stop := false
-var _is_calculating_subtotal := false
+#var _is_calculating_subtotal := false
 
 
 func _ready() -> void:
