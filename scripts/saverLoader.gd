@@ -1,10 +1,5 @@
 extends Node
 
-
-var LEVELS_PATH := {
-	"level1-1": {"path": "res://LevelScenes/level1-1.tscn", "next": "level1-2"},
-	"level1-2": {"path": "res://LevelScenes/level1-2.tscn", "next": "level1-3"}
-}
 var saved_game:SavedGame
 var _path := "user://savegame.tres"
 var level_file_path = "res://LevelScenes/"
@@ -17,29 +12,31 @@ func _ready() -> void:
 	if not saved_game:
 		saved_game = SavedGame.new()
 	print(saved_game)
-	_check_all_level_scene()
 
-func save_game(current:StringName, score:int, count:int) -> void:
-	saved_game.latest_level = _next_level(current)
-	saved_game.set_level_data(current, score, count)
+func save_game(current_level:StringName, score:int, count:int, is_successed:bool) -> void:
+	saved_game._set_level_data(current_level, score, count, is_successed)
 	ResourceSaver.save(saved_game, _path)
 
-func _next_level(current:StringName) -> StringName:
-	return LEVELS_PATH[current]["next"]   #这里current肯定是拿到关卡名称了
-
-func latest_scene() -> String: #一开始和返回都会调用这个方法 saved_game.latest_level这个是全局变量
-	if saved_game and saved_game.latest_level:
-		print("xxxxx",saved_game.latest_level)
-		return LEVELS_PATH[saved_game.latest_level]["path"]
-	return first_level_path
-
-func _is_next_level_exist() -> void:
-	pass #检查是否有下一关
+func next_level(current_level:StringName) -> StringName:
+	var next_level_name = ""
+	print("这个组合名称:", level_base_name_list)
+	if level_base_name_list.size() > 0:
+		for i in range(0, level_base_name_list.size()):
+			if level_base_name_list[i] == current_level:
+				if i+1 < level_base_name_list.size():
+					next_level_name = level_base_name_list[i+1]
+					print("这个关卡名称:", next_level_name)
+					break
+		if next_level_name:
+			return next_level_name
+		else:
+			return current_level
+	return current_level
 	
-func _check_all_level_scene() -> void:
+func _get_first_level_scene() -> String:
 	var dir = DirAccess.open(level_file_path)
 	if dir:
-		var pattern = "level[0-9]+-[0-9]"
+		var pattern = "level[0-9]+-[0-9].tscn"
 		var regexp = RegEx.new()
 		regexp.compile(pattern)
 		dir.list_dir_begin()
@@ -53,3 +50,5 @@ func _check_all_level_scene() -> void:
 			file_name = dir.get_next()
 	#第一关路径
 	first_level_path = level_file_path + level_file_list[0]
+	return first_level_path
+	

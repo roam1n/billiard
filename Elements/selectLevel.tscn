@@ -5,10 +5,9 @@
 [node name="SelectLevel" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 272.0
-offset_top = 128.0
-offset_right = 272.0
-offset_bottom = 128.0
+offset_left = 6.10352e-05
+offset_right = 6.10352e-05
+scale = Vector2(1.4613, 1.3532)
 script = ExtResource("1_qj2g5")
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -17,9 +16,7 @@ offset_right = 1184.0
 offset_bottom = 720.0
 color = Color(0.0823529, 0.0823529, 0.0823529, 1)
 
-[node name="LevelButtons" type="GridContainer" parent="."]
+[node name="LevelButtonsGrid" type="GridContainer" parent="."]
 layout_mode = 0
-offset_left = 128.0
-offset_top = 64.0
-offset_right = 461.0
-offset_bottom = 280.0
+offset_right = 1184.0
+offset_bottom = 720.0

@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://cshgvertebhpn"]
 
-[ext_resource type="Script" path="res://LevelScenes/level.gd" id="1_bius4"]
+[ext_resource type="Script" path="res://LevelScenes/level1-2.gd" id="1_kucw3"]
 [ext_resource type="Script" path="res://scripts/border.gd" id="2_3gqeo"]
 [ext_resource type="PackedScene" uid="uid://buomutnqf16ej" path="res://Elements/cueBall.tscn" id="3_wh2t3"]
 [ext_resource type="Script" path="res://scripts/camera2D.gd" id="4_osy7y"]
@@ -24,7 +24,7 @@ size = Vector2(1452, 300)
 size = Vector2(300, 948)
 
 [node name="level1-2" type="Node2D"]
-script = ExtResource("1_bius4")
+script = ExtResource("1_kucw3")
 
 [node name="Border" type="StaticBody2D" parent="."]
 unique_name_in_owner = true

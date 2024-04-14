@@ -1,6 +1,5 @@
 extends Control
 
-var folder_path = "res://LevelScenes/"
 var grid_gap_size = 0
 
 func _ready():
@@ -11,6 +10,7 @@ func _ready():
 				add_child(custom_button)
 				var label = custom_button.get_node("Label") 
 				label.text = level_name
+				#每个关卡按键摆放位置
 				custom_button.position = Vector2(200, grid_gap_size)
 				grid_gap_size += 100
 	print("None level")

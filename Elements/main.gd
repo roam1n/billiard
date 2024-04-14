@@ -17,26 +17,15 @@ signal selected_pole(pole:PoleSelect)
 
 enum PoleSelect {HIGH, MEDIUM, LOW, JUMP, NONE}
 
-var _is_success:bool = false
 var _is_selecting:bool = false
 var _selected_pole := PoleSelect.HIGH
 var _pole_nodes := []
-var level_name:StringName = "1-1"
-var current_level_index : int = 0
-var current_level: Level:
-	set(value):
-		if current_level:
-			current_level.successed.disconnect(_on_current_level_successed)
-			current_level.failing.disconnect(_on_current_level_failing)			
-		current_level = value
-		get_parent().add_child(current_level)
-		print("yyyyyyyy",current_level)
-		current_level.successed.connect(_on_current_level_successed)
-		current_level.failing.connect(_on_current_level_failing)
+var level_name:StringName = ""
 
 func _ready() -> void:
 	level_complete.hide()
 	level_name = get_parent().name
+	print("打印当前关卡:", level_name)
 	%LevelName.set_text(level_name)
 	_pole_nodes = [%HigtPole, %MediumPole, %LowPole, %JumpPole]
 	_on_select_pole()
@@ -51,7 +40,7 @@ func _ready() -> void:
 	)
 	next_btn.pressed.connect(
 		func() -> void:
-			next_level()
+			get_next_level()
 			level_complete.hide()
 	)
 		
@@ -97,39 +86,27 @@ func _change_batting_score_label(new_batting_score, new_batting_count) -> void:
 	batting_count.set_text("次数：%d" % new_batting_count)
 	print("updated_score")
 
-func _level_done(_current_level_name, _batting_score, _batting_count) -> void:
-	level_complete.show()
-	SaverLoader.save_game(_current_level_name, _batting_score, _batting_count)
-	print("level done",_current_level_name)
+func _level_done(_batting_score, _batting_count, _is_level_success) -> void:
+	show_popup_game_over(_is_level_success)
+	SaverLoader.save_game(level_name, _batting_score, _batting_count, _is_level_success)
+	print("level done:",level_name)
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://start.tscn")
 
-func show_popup_game_over() -> void:
-	success_or_fail_label.text = "过关啦" if _is_success else "失败啦"
+func show_popup_game_over(is_level_success: bool) -> void:
+	success_or_fail_label.text = "过关啦" if is_level_success else "失败啦"
 	level_complete.show()
 
 #加载下一关
-func next_level() -> void:
-	#将当前关所在大关遍历，如当前大关号及尾号+1存在则进入该关卡，否则进入到下一大关第一关
-	if levels.size() -1 > current_level_index:
-		current_level_index += 1
-		#levels[current_level_index].instantiate()
-		call_deferred("queue_free")
-		print("trrrrrrrrrrr", get_parent().name)
-		var new_scene_path = "res://LevelScenes/level1-2.tscn"
-		get_tree().change_scene_to_file(new_scene_path)
+func get_next_level() -> void:
+	print("打印当前关卡:", level_name)
+	var next_level = SaverLoader.next_level(level_name)
+	print("打xiayi关卡:", next_level)
+	call_deferred("queue_free")
+	var new_scene_path = "res://LevelScenes/" + next_level + ".tscn"
+	get_tree().change_scene_to_file(new_scene_path)
 		
 #加载当前关卡		
 func load_level() -> void:
-	#var scene_path = get_tree().current_scene
 	get_tree().reload_current_scene()
-	print("acccccccccc")
-	
-func _on_current_level_successed() -> void:
-	_is_success = true
-	show_popup_game_over()
-	
-func _on_current_level_failing() -> void:
-	_is_success = false
-	show_popup_game_over()

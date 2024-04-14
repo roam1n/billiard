@@ -22,6 +22,11 @@ var _is_time_stop := false
 func _ready() -> void:
 	$Sprite2D.material.set_shader_parameter("custom_color", Vector3(custom_color.r, custom_color.g, custom_color.b))
 
+func _physics_process(_delta: float) -> void:
+	_cue_position()
+	if Input.is_action_just_pressed("left_mouse"):
+		_in_running()
+
 func _cue_position() -> void:
 	var l_mouse_position := get_local_mouse_position()
 	$Mouse.position = l_mouse_position if l_mouse_position.length() < MAX_RADIUS else l_mouse_position.normalized() * MAX_RADIUS

@@ -10,12 +10,10 @@ var select_level_scene_path = "res://Elements/selectLevel.tscn"
 const MAX_RADIUS := 324
 
 func _ready() -> void:
-	continue_scene = SaverLoader.latest_scene()
+	continue_scene = SaverLoader._get_first_level_scene()
 
 func _physics_process(_delta:float) -> void:
-	if cueball:
-		cueball._cue_position()
-		if Input.is_action_just_pressed("left_mouse"):
+	if Input.is_action_just_pressed("left_mouse"):
 			cueball._in_running()
 	if next_scene:
 		print(next_scene)
