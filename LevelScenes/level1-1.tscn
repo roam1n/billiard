@@ -64,6 +64,7 @@ shape = SubResource("RectangleShape2D_vfe35")
 
 [node name="CueBall" parent="." instance=ExtResource("3_ji40o")]
 position = Vector2(900, 600)
+custom_color = Color(0.980392, 0.921569, 0.843137, 1)
 
 [node name="Camera2D" type="Camera2D" parent="CueBall"]
 position = Vector2(-44, -114)

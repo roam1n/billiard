@@ -17,9 +17,11 @@ func _physics_process(_delta:float) -> void:
 			cueball._in_running()
 	if next_scene:
 		print(next_scene)
+		cueball.queue_free()
 		get_tree().change_scene_to_file(next_scene)
 		next_scene = ""
 	if select_level:
+		cueball.queue_free()
 		get_tree().change_scene_to_file(select_level_scene_path)
 
 		

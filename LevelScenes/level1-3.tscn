@@ -1,0 +1,67 @@
+[gd_scene load_steps=5 format=3 uid="uid://3rm01wpolpns"]
+
+[ext_resource type="PackedScene" uid="uid://dca11vlumvg72" path="res://LevelScenes/level.tscn" id="1_lg50c"]
+[ext_resource type="Script" path="res://LevelScenes/level1-3.gd" id="2_ypk02"]
+[ext_resource type="PackedScene" uid="uid://dn45bvh3asvro" path="res://Elements/blueBounce.tscn" id="3_wvvlj"]
+[ext_resource type="PackedScene" uid="uid://iarwf24y3vhx" path="res://Elements/purpleBounce.tscn" id="4_wg7ri"]
+
+[node name="level1-3" instance=ExtResource("1_lg50c")]
+script = ExtResource("2_ypk02")
+
+[node name="background" parent="Border" index="0"]
+offset_left = 112.0
+offset_right = 1264.0
+scale = Vector2(1.17141, 1.08926)
+
+[node name="top" parent="Border" index="1"]
+position = Vector2(939.5, -32)
+
+[node name="right" parent="Border" index="2"]
+position = Vector2(1616, 626.75)
+
+[node name="bottom" parent="Border" index="3"]
+position = Vector2(634.25, 984)
+
+[node name="left" parent="Border" index="4"]
+position = Vector2(-40, 327)
+
+[node name="CueBall" parent="." index="1"]
+position = Vector2(800, 480)
+
+[node name="ObjectBall" parent="." index="2"]
+position = Vector2(672, 296)
+
+[node name="BonusArea" parent="." index="3" groups=["score15"]]
+position = Vector2(760, 752)
+scale = Vector2(0.7633, 0.783704)
+
+[node name="BonusArea2" parent="." index="4" groups=["score10"]]
+position = Vector2(320, 336)
+
+[node name="BlueBounce" parent="." index="5" instance=ExtResource("3_wvvlj")]
+position = Vector2(560, 152)
+
+[node name="PurpleBounce" parent="." index="6" instance=ExtResource("4_wg7ri")]
+position = Vector2(536, 304)
+
+[node name="PurpleBounce2" parent="." index="7" instance=ExtResource("4_wg7ri")]
+position = Vector2(648, 624)
+rotation = -1.56666
+
+[node name="PurpleBounce3" parent="." index="8" instance=ExtResource("4_wg7ri")]
+position = Vector2(912, 296)
+
+[node name="PurpleBounce4" parent="." index="9" instance=ExtResource("4_wg7ri")]
+position = Vector2(1160, 616)
+rotation = 0.483823
+
+[node name="PurpleBounce5" parent="." index="10" instance=ExtResource("4_wg7ri")]
+position = Vector2(312, 632)
+rotation = -0.458622
+
+[connection signal="body_entered" from="BlueBounce" to="." method="_on_blue_bounce_body_entered"]
+[connection signal="body_entered" from="PurpleBounce" to="." method="_on_purple_bounce_body_entered"]
+[connection signal="body_entered" from="PurpleBounce2" to="." method="_on_purple_bounce_body_entered"]
+[connection signal="body_entered" from="PurpleBounce3" to="." method="_on_purple_bounce_body_entered"]
+[connection signal="body_entered" from="PurpleBounce4" to="." method="_on_purple_bounce_body_entered"]
+[connection signal="body_entered" from="PurpleBounce5" to="." method="_on_purple_bounce_body_entered"]

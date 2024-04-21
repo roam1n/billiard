@@ -29,7 +29,6 @@ contact_monitor = true
 linear_damp = 0.7
 angular_damp = 0.7
 script = ExtResource("1_lokwv")
-custom_color = Color(0.964706, 0.960784, 0.458824, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_p7kwq")
@@ -51,4 +50,5 @@ width = 4.0
 [node name="Timer" type="Timer" parent="."]
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

@@ -47,6 +47,7 @@ text = "选择关卡"
 
 [node name="CueBall" parent="." instance=ExtResource("1_203ns")]
 position = Vector2(1219, 483)
+custom_color = Color(0.980392, 0.921569, 0.843137, 1)
 
 [connection signal="body_entered" from="ColorRect/Start" to="." method="_on_start_body_entered"]
 [connection signal="body_entered" from="ColorRect/SelectLevel" to="." method="_on_select_level_body_entered"]

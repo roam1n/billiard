@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cshgvertebhpn"]
+[gd_scene load_steps=15 format=3 uid="uid://cshgvertebhpn"]
 
 [ext_resource type="Script" path="res://LevelScenes/level1-2.gd" id="1_kucw3"]
 [ext_resource type="Script" path="res://scripts/border.gd" id="2_3gqeo"]
@@ -6,7 +6,9 @@
 [ext_resource type="Script" path="res://scripts/camera2D.gd" id="4_osy7y"]
 [ext_resource type="PackedScene" uid="uid://270fi8jto1i5" path="res://Elements/objectBall.tscn" id="5_ueugh"]
 [ext_resource type="PackedScene" uid="uid://cntlro8d45gwl" path="res://Elements/bonusArea.tscn" id="6_5tq4n"]
+[ext_resource type="PackedScene" uid="uid://dn45bvh3asvro" path="res://Elements/blueBounce.tscn" id="7_2r44h"]
 [ext_resource type="PackedScene" uid="uid://bkg17ao76swlq" path="res://Elements/main.tscn" id="7_mjt31"]
+[ext_resource type="PackedScene" uid="uid://dr2lw2u0h5r38" path="res://Elements/noScoreBounce.tscn" id="8_86i1d"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wom6v"]
 bounce = 0.3
@@ -63,7 +65,8 @@ position = Vector2(-30, 294)
 shape = SubResource("RectangleShape2D_vfe35")
 
 [node name="CueBall" parent="." instance=ExtResource("3_wh2t3")]
-position = Vector2(900, 600)
+position = Vector2(859, 546)
+custom_color = Color(0.980392, 0.921569, 0.843137, 1)
 
 [node name="Camera2D" type="Camera2D" parent="CueBall"]
 position = Vector2(-34, -114)
@@ -73,12 +76,24 @@ drag_vertical_enabled = true
 script = ExtResource("4_osy7y")
 
 [node name="ObjectBall" parent="." instance=ExtResource("5_ueugh")]
-position = Vector2(590, 412)
+position = Vector2(720, 446)
 
-[node name="BonusArea" parent="." instance=ExtResource("6_5tq4n")]
-position = Vector2(250, 561)
+[node name="10_Score_BonusArea" parent="." groups=["score10"] instance=ExtResource("6_5tq4n")]
+position = Vector2(306, 305)
 
-[node name="BonusArea2" parent="." instance=ExtResource("6_5tq4n")]
-position = Vector2(243, 213)
+[node name="15_Score_BonusArea" parent="." groups=["score15"] instance=ExtResource("6_5tq4n")]
+position = Vector2(1189, 708)
+scale = Vector2(0.692364, 0.667465)
+
+[node name="5_Score_Bounce" parent="." instance=ExtResource("7_2r44h")]
+position = Vector2(394, 141)
+
+[node name="NoScoreBounce" parent="." instance=ExtResource("8_86i1d")]
+position = Vector2(719, 264)
+
+[node name="NoScoreBounce2" parent="." instance=ExtResource("8_86i1d")]
+position = Vector2(719, 625)
 
 [node name="Main" parent="." instance=ExtResource("7_mjt31")]
+
+[connection signal="body_entered" from="5_Score_Bounce" to="." method="_on_blue_bounce_body_entered"]

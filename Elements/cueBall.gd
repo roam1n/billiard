@@ -1,5 +1,7 @@
 extends RigidBody2D
 
+@onready var time:= $Timer
+
 @export var custom_color := Color.ANTIQUE_WHITE;
 @export var is_level := true
 
@@ -14,18 +16,17 @@ enum PoleSelect {HIGH, MEDIUM, LOW, JUMP, NONE}
 const SPEED := 200
 const MAX_RADIUS := 324
 var _velocity := Vector2(0.0, 0.0)
-var _pole_select := PoleSelect.HIGH
-var _is_time_stop := false
-#var _is_calculating_subtotal := false
-
+var _pole_select: PoleSelect = PoleSelect.HIGH
 
 func _ready() -> void:
 	$Sprite2D.material.set_shader_parameter("custom_color", Vector3(custom_color.r, custom_color.g, custom_color.b))
-
+	if get_parent() is Level:
+		var main_node = get_parent().get_node("Main")
+		print("这个是哪个",main_node)
+		main_node.connect("selected_pole", _on_main_selected_pole)
+			
 func _physics_process(_delta: float) -> void:
 	_cue_position()
-	if Input.is_action_just_pressed("left_mouse"):
-		_in_running()
 
 func _cue_position() -> void:
 	var l_mouse_position := get_local_mouse_position()
@@ -39,6 +40,7 @@ func _in_running() -> void:
 	$Mouse.hide()
 
 func _wait_to_inactive():
+	print("传递了吗b")
 	$Mouse.hide()
 
 func _inactive_to_wait():
@@ -47,7 +49,40 @@ func _inactive_to_wait():
 func _subtotal_to_wait():
 	$Mouse.show()
 
-# level scene 中绑定 Main 信号 selected_pole
-func _on_main_selected_pole(pole: PoleSelect) -> void:
-	_pole_select = pole
-	_is_time_stop = false
+func _on_main_selected_pole(newpole) -> void:
+	_pole_select = newpole
+	match newpole:
+		PoleSelect.HIGH:
+			print("It's an high!")
+		PoleSelect.LOW:
+			print("It's an low!")
+		PoleSelect.MEDIUM:
+			print("It's an medium!")
+
+
+func _on_body_entered(body):
+	if body is RigidBody2D:
+		var other_rigidbody = body as RigidBody2D
+		if other_rigidbody.is_in_group("balls"):
+			print("Collision with a RigidBody2D in the specified group detected!")
+			_collison_to_object_ball()
+
+#母球撞到的类型是其他刚体球		
+func _collison_to_object_ball() ->void:
+	match _pole_select:
+		PoleSelect.HIGH:
+			pass
+		PoleSelect.LOW:
+			apply_central_impulse(-_velocity * 8)
+		PoleSelect.MEDIUM:
+			apply_central_impulse(-_velocity * 4)
+		_:
+			print("Unknown pole")
+	#_is_accept_ball_collision = false
+	#time.start(2)
+#
+#func _on_timer_timeout():
+	#_is_accept_ball_collision = true
+
+#func _on_body_exited(body):
+	#linear_velocity = _velocity

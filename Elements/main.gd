@@ -14,6 +14,7 @@ extends CanvasLayer
 @onready var success_or_fail_label: Label = %Label
 
 signal selected_pole(pole:PoleSelect)
+signal selected_finish(_is_time_stop:bool)
 
 enum PoleSelect {HIGH, MEDIUM, LOW, JUMP, NONE}
 
@@ -21,6 +22,7 @@ var _is_selecting:bool = false
 var _selected_pole := PoleSelect.HIGH
 var _pole_nodes := []
 var level_name:StringName = ""
+var _is_time_stop := false
 
 func _ready() -> void:
 	level_complete.hide()
@@ -31,8 +33,10 @@ func _ready() -> void:
 	_on_select_pole()
 	var level_node = get_parent()
 	if level_node:
-		level_node.connect("level_to_main_subtotal_completed", _change_batting_score_label)
+		level_node.connect("level_to_main_score_completed", _change_batting_score_label)
+		level_node.connect("level_to_main_count_completed", _change_batting_count_label)
 		level_node.connect("level_to_main_done", _level_done)
+		level_node.connect("level_to_main_inactive", _ball_inactive_player_select)
 	restart_btn.pressed.connect(
 		func() -> void:
 			load_level()
@@ -44,14 +48,16 @@ func _ready() -> void:
 			level_complete.hide()
 	)
 		
-# level scene 中绑定 cueBall 信号 ball_inactive
-func _on_cut_ball_ball_inactive() -> void:
+func _ball_inactive_player_select() -> void:
 	_is_selecting = true
 	_all_show_pole_buttons()
+	print("传递了吗m")
 
 func _on_select_pole() -> void:
 	_only_show_selected_pole(_selected_pole)
-	selected_pole.emit(_selected_pole)
+	emit_signal("selected_pole", _selected_pole)
+	emit_signal("selected_finish", _is_time_stop)
+	print("qqqqqqq",_selected_pole)
 
 func _all_show_pole_buttons() -> void:
 	for node in _pole_nodes:
@@ -81,10 +87,13 @@ func _on_jump_pole_button_down() -> void:
 	_selected_pole = PoleSelect.JUMP
 	_on_select_pole()
 
-func _change_batting_score_label(new_batting_score, new_batting_count) -> void:
+func _change_batting_score_label(new_batting_score) -> void:
 	batting_score.set_text("得分：%d" % new_batting_score)
-	batting_count.set_text("次数：%d" % new_batting_count)
 	print("updated_score")
+	
+func _change_batting_count_label(new_batting_count) -> void:
+	batting_count.set_text("次数：%d" % new_batting_count)
+	print("updated_count")
 
 func _level_done(_batting_score, _batting_count, _is_level_success) -> void:
 	show_popup_game_over(_is_level_success)
@@ -98,15 +107,14 @@ func show_popup_game_over(is_level_success: bool) -> void:
 	success_or_fail_label.text = "过关啦" if is_level_success else "失败啦"
 	level_complete.show()
 
-#加载下一关
 func get_next_level() -> void:
-	print("打印当前关卡:", level_name)
+	print("当前关卡:", level_name)
 	var next_level = SaverLoader.next_level(level_name)
-	print("打xiayi关卡:", next_level)
+	print("下一关卡:", next_level)
 	call_deferred("queue_free")
 	var new_scene_path = "res://LevelScenes/" + next_level + ".tscn"
 	get_tree().change_scene_to_file(new_scene_path)
 		
-#加载当前关卡		
 func load_level() -> void:
 	get_tree().reload_current_scene()
+

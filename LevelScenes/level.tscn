@@ -12,16 +12,16 @@
 bounce = 0.3
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rb8hr"]
-size = Vector2(1452, 300)
+size = Vector2(1657, 300)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c60rx"]
-size = Vector2(300, 948)
+size = Vector2(300, 1018.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c23sq"]
-size = Vector2(1452, 300)
+size = Vector2(1659.5, 300)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vfe35"]
-size = Vector2(300, 948)
+size = Vector2(300, 1010)
 
 [node name="Level" type="Node2D"]
 script = ExtResource("1_lp8a5")

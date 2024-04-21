@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://iarwf24y3vhx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w3eif"]
+size = Vector2(40, 216)
+
+[node name="PurpleBounce" type="RigidBody2D"]
+mass = 80000.0
+gravity_scale = 0.0
+max_contacts_reported = 4
+contact_monitor = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 40.0
+offset_bottom = 216.0
+color = Color(0.443137, 0, 0.835294, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(20, 108)
+shape = SubResource("RectangleShape2D_w3eif")
