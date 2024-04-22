@@ -2,11 +2,11 @@ extends Node
 
 var saved_game:SavedGame
 var _path := "user://savegame.tres"
-var level_file_path = "res://LevelScenes/"
-var level_file_list = []
-var level_base_name_list = []
-var first_level_path = ""
-var method_executed = false
+var level_file_path := "res://LevelScenes/"
+var level_file_list := []
+var level_base_name_list := []
+var first_level_path := ""
+var method_executed := false
 
 func _ready() -> void:
 	saved_game = load(_path) as SavedGame

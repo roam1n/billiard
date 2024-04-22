@@ -39,14 +39,14 @@ func _in_running() -> void:
 	linear_velocity = _velocity * 4.5
 	$Mouse.hide()
 
-func _wait_to_inactive():
+func _wait_to_inactive() -> void:
 	print("传递了吗b")
 	$Mouse.hide()
 
-func _inactive_to_wait():
+func _inactive_to_wait() -> void:
 	$Mouse.show()
 
-func _subtotal_to_wait():
+func _subtotal_to_wait() -> void:
 	$Mouse.show()
 
 func _on_main_selected_pole(newpole) -> void:
@@ -59,15 +59,14 @@ func _on_main_selected_pole(newpole) -> void:
 		PoleSelect.MEDIUM:
 			print("It's an medium!")
 
-
-func _on_body_entered(body):
+func _on_body_entered(body) -> void:
 	if body is RigidBody2D:
 		var other_rigidbody = body as RigidBody2D
 		if other_rigidbody.is_in_group("balls"):
 			print("Collision with a RigidBody2D in the specified group detected!")
 			_collison_to_object_ball()
 
-#母球撞到的类型是其他刚体球		
+# 母球撞到的类型是其他刚体球
 func _collison_to_object_ball() ->void:
 	match _pole_select:
 		PoleSelect.HIGH:

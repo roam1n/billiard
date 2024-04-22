@@ -31,12 +31,13 @@ func _ready() -> void:
 	%LevelName.set_text(level_name)
 	_pole_nodes = [%HigtPole, %MediumPole, %LowPole, %JumpPole]
 	_on_select_pole()
-	var level_node = get_parent()
+	var level_node:Node = get_parent()
 	if level_node:
 		level_node.connect("level_to_main_score_completed", _change_batting_score_label)
 		level_node.connect("level_to_main_count_completed", _change_batting_count_label)
 		level_node.connect("level_to_main_done", _level_done)
 		level_node.connect("level_to_main_inactive", _ball_inactive_player_select)
+
 	restart_btn.pressed.connect(
 		func() -> void:
 			load_level()
@@ -109,12 +110,11 @@ func show_popup_game_over(is_level_success: bool) -> void:
 
 func get_next_level() -> void:
 	print("当前关卡:", level_name)
-	var next_level = SaverLoader.next_level(level_name)
+	var next_level:StringName = SaverLoader.next_level(level_name)
 	print("下一关卡:", next_level)
 	call_deferred("queue_free")
-	var new_scene_path = "res://LevelScenes/" + next_level + ".tscn"
+	var new_scene_path:String = "res://LevelScenes/" + next_level + ".tscn"
 	get_tree().change_scene_to_file(new_scene_path)
-		
+
 func load_level() -> void:
 	get_tree().reload_current_scene()
-

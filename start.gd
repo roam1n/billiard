@@ -4,8 +4,8 @@ extends Control
 
 var next_scene:String = ""
 var continue_scene:String = ""
-var select_level: bool = false
-var select_level_scene_path = "res://Elements/selectLevel.tscn"
+var select_level:bool = false
+var select_level_scene_path:String = "res://Elements/selectLevel.tscn"
 
 const MAX_RADIUS := 324
 
@@ -26,11 +26,11 @@ func _physics_process(_delta:float) -> void:
 
 		
 func _on_start_body_entered(body: Node2D) -> void:
-		if body.is_in_group("balls"):
-			body.call_deferred("queue_free")
-			next_scene = continue_scene
+	if body.is_in_group("balls"):
+		body.call_deferred("queue_free")
+		next_scene = continue_scene
 
 func _on_select_level_body_entered(body: Node2D) -> void:
-		if body.is_in_group("balls"):
-			body.call_deferred("queue_free")
-			select_level = true
+	if body.is_in_group("balls"):
+		body.call_deferred("queue_free")
+		select_level = true
