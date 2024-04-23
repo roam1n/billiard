@@ -2,8 +2,9 @@ extends Control
 
 var grid_gap_size := 0
 
+const LEVEL_BUTTON = preload("res://Elements/levelButtons.tscn");
+
 func _ready() -> void:
-	const LEVEL_BUTTON = preload("res://Elements/levelButtons.tscn");
 	if SaverLoader.level_base_name_list:
 		for level_name in SaverLoader.level_base_name_list:
 			#按关卡数动态增加关卡选择按键

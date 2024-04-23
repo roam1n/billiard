@@ -1,11 +1,5 @@
 extends CanvasLayer
 
-# Main的父节点一定是level
-@export var levels:Array[String] = [
-	"res://LevelScenes/level1-1.tscn",
-	"res://LevelScenes/level1-2.tscn"
-]
-
 @onready var batting_score: Label = %BattingScore
 @onready var batting_count: Label = %BattingCount
 @onready var level_complete: PanelContainer = %LevelComplete
@@ -33,10 +27,10 @@ func _ready() -> void:
 	_on_select_pole()
 	var level_node:Node = get_parent()
 	if level_node:
-		level_node.connect("level_to_main_score_completed", _change_batting_score_label)
-		level_node.connect("level_to_main_count_completed", _change_batting_count_label)
-		level_node.connect("level_to_main_done", _level_done)
-		level_node.connect("level_to_main_inactive", _ball_inactive_player_select)
+		level_node.level_to_main_score_completed.connect(_change_batting_score_label)
+		level_node.level_to_main_count_completed.connect(_change_batting_count_label)
+		level_node.level_to_main_done.connect(_level_done)
+		level_node.level_to_main_inactive.connect(_ball_inactive_player_select)
 
 	restart_btn.pressed.connect(
 		func() -> void:
@@ -48,17 +42,15 @@ func _ready() -> void:
 			get_next_level()
 			level_complete.hide()
 	)
-		
+
 func _ball_inactive_player_select() -> void:
 	_is_selecting = true
 	_all_show_pole_buttons()
-	print("传递了吗m")
 
 func _on_select_pole() -> void:
 	_only_show_selected_pole(_selected_pole)
-	emit_signal("selected_pole", _selected_pole)
-	emit_signal("selected_finish", _is_time_stop)
-	print("qqqqqqq",_selected_pole)
+	selected_pole.emit(_selected_pole)
+	selected_finish.emit(_is_time_stop)
 
 func _all_show_pole_buttons() -> void:
 	for node in _pole_nodes:
@@ -91,7 +83,7 @@ func _on_jump_pole_button_down() -> void:
 func _change_batting_score_label(new_batting_score) -> void:
 	batting_score.set_text("得分：%d" % new_batting_score)
 	print("updated_score")
-	
+
 func _change_batting_count_label(new_batting_count) -> void:
 	batting_count.set_text("次数：%d" % new_batting_count)
 	print("updated_count")

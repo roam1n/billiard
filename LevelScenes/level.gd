@@ -9,41 +9,24 @@ enum Status{
 	DONE
 }
 
-var game_state: Status = Status.WAITING:
-	set(value):
-		print("状态切换：",Status.keys()[value])
-		game_state = value
-				
 @onready var cueball: RigidBody2D = $CueBall
 
-@export var is_level := true
+@export var target_score: int = 10
+@export var max_batting_count: int = 2
+
 var _is_time_stop := false
 var _is_calculating_subtotal := false
 var _is_success := false
 var _batting_score := 0
 var _batting_count := 0
-var level_name:StringName = ""
-var _lock = Mutex.new()
+var game_state: Status = Status.WAITING
 
-signal level_to_main_score_completed(_batting_score)
-signal level_to_main_count_completed(_batting_count)
-signal level_to_main_done(_batting_score, _batting_count, _is_success)
+
+signal level_to_main_score_completed(batting_score)
+signal level_to_main_count_completed(batting_count)
+signal level_to_main_done(batting_score, batting_count, is_success)
 signal level_to_main_inactive
 
-func get_batting_score_value() -> int:
-	_lock.lock()
-	var value:int = _batting_score
-	_lock.unlock()
-	return value
-
-func set_batting_score_value(new_value) -> void:
-	_lock.lock()
-	_batting_score = new_value
-	_lock.unlock()
-	
-func get_batting_count_value() -> int:
-	var value:int = _batting_count
-	return value
 
 func _ready() -> void:
 	set_process(true)
@@ -54,40 +37,45 @@ func _ready() -> void:
 		main_node.connect("selected_finish", _on_main_selected_finish)
 
 func _process(_delta) -> void:
-	if game_state == Status.WAITING:
-		waiting()
-	if game_state == Status.RUNNING:
-		running()
-	if game_state == Status.INACTIVE:
-		inactive()
-	if game_state == Status.SUBTOTAL:
-		subtotal()
-		
+	match game_state:
+		Status.WAITING:
+			waiting()
+		Status.RUNNING:
+			running()
+		Status.INACTIVE:
+			inactive()
+		Status.SUBTOTAL:
+			subtotal()
+
+func get_batting_count_value() -> int:
+	var value: int = _batting_count
+	return value
+
 func waiting() -> void:
 	if Input.is_action_just_pressed("left_mouse"):
 		_wait_to_running()
-	if Input.is_action_just_pressed("right_mouse") and is_level:
-		_wait_to_inactive()		
+	if Input.is_action_just_pressed("right_mouse"):
+		_wait_to_inactive()
 
 func running() -> void:
 	if cueball.linear_velocity.length() < 5:
 		_running_to_subtotal()
-		if Input.is_action_just_pressed("right_mouse") and is_level:
-			_wait_to_inactive()	
-			
+		if Input.is_action_just_pressed("right_mouse"):
+			_wait_to_inactive()
+
 func inactive() -> void:
 	if not _is_time_stop and cueball.linear_velocity.length() < 10:
 		_inactive_to_wait()
 	elif not _is_time_stop:
 		_inactive_to_running()
-		
+
 func subtotal() -> void:
 	if not _is_calculating_subtotal:
-		if _batting_score >= 10:
+		if _batting_score >= target_score:
 			_is_success = true
 			_subtotal_to_done()
 			print("闯关成功")
-		elif _batting_score < 10 and _batting_count >2:
+		elif  _batting_count >= max_batting_count:
 			_is_success = false
 			_subtotal_to_done()
 			print("闯关失败")
@@ -110,13 +98,13 @@ func _wait_to_inactive() -> void:
 	_is_time_stop = true
 	game_state = Status.INACTIVE
 	cueball._wait_to_inactive()
-	emit_signal("level_to_main_inactive")
-	
+	level_to_main_inactive.emit()
+
 func _inactive_to_wait() -> void:
 	Engine.time_scale = 1
 	game_state = Status.WAITING
 	cueball._inactive_to_wait()
-	
+
 func _inactive_to_running() -> void:
 	Engine.time_scale = 1
 	game_state = Status.RUNNING
@@ -124,12 +112,12 @@ func _inactive_to_running() -> void:
 
 func _subtotal_to_done() -> void:
 	game_state = Status.DONE
-	emit_signal("level_to_main_done", _batting_score, _batting_count, _is_success)	
+	level_to_main_done.emit(_batting_score, _batting_count, _is_success)
 
 func _subtotal_to_wait() -> void:
 	game_state = Status.WAITING
 	cueball._subtotal_to_wait()
-	
+
 func _score_subtotal() -> void:
 	print("stop running")
 	var score := 0
@@ -137,17 +125,23 @@ func _score_subtotal() -> void:
 		if node as Area2D:
 			for ball in node.get_overlapping_bodies():
 				if ball.is_in_group("balls"):
-					score += 10
+					score += node.get_meta("score")
 					if ball.is_in_group("objectBalls"):
 						# 销毁已得分的子球
 						ball.queue_free()
-	var current_batting_score = get_batting_score_value()
-	current_batting_score += score
-	set_batting_score_value(current_batting_score)
+	_batting_score += score
 	_batting_count += 1
 	#给Main发信号更新分数
-	emit_signal("level_to_main_score_completed", _batting_score)
-	emit_signal("level_to_main_count_completed", _batting_count)
+	level_to_main_score_completed.emit(_batting_score)
+	level_to_main_count_completed.emit(_batting_count)
 
 func _on_main_selected_finish(is_time_stop) -> void:
 	_is_time_stop = is_time_stop # Replace with function body.
+	
+func _on_blue_bounce_body_entered(_body) -> void:
+	_batting_score += 5
+	level_to_main_score_completed.emit(_batting_score)
+
+func _on_purple_bounce_body_entered(_body):
+	_batting_score += -5
+	level_to_main_score_completed.emit(_batting_score)

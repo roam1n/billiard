@@ -5,8 +5,8 @@ extends Control
 var next_scene:String = ""
 var continue_scene:String = ""
 var select_level:bool = false
-var select_level_scene_path:String = "res://Elements/selectLevel.tscn"
 
+const SELECT_LEVEL_SCENE_PATH: String = "res://Elements/selectLevel.tscn"
 const MAX_RADIUS := 324
 
 func _ready() -> void:
@@ -14,7 +14,7 @@ func _ready() -> void:
 
 func _physics_process(_delta:float) -> void:
 	if Input.is_action_just_pressed("left_mouse"):
-			cueball._in_running()
+		cueball._in_running()
 	if next_scene:
 		print(next_scene)
 		cueball.queue_free()
@@ -22,9 +22,8 @@ func _physics_process(_delta:float) -> void:
 		next_scene = ""
 	if select_level:
 		cueball.queue_free()
-		get_tree().change_scene_to_file(select_level_scene_path)
+		get_tree().change_scene_to_file(SELECT_LEVEL_SCENE_PATH)
 
-		
 func _on_start_body_entered(body: Node2D) -> void:
 	if body.is_in_group("balls"):
 		body.call_deferred("queue_free")

@@ -1,12 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://3rm01wpolpns"]
+[gd_scene load_steps=4 format=3 uid="uid://dq24wivnkw8rp"]
 
 [ext_resource type="PackedScene" uid="uid://dca11vlumvg72" path="res://LevelScenes/level.tscn" id="1_lg50c"]
-[ext_resource type="Script" path="res://LevelScenes/level1-3.gd" id="2_ypk02"]
 [ext_resource type="PackedScene" uid="uid://dn45bvh3asvro" path="res://Elements/blueBounce.tscn" id="3_wvvlj"]
-[ext_resource type="PackedScene" uid="uid://iarwf24y3vhx" path="res://Elements/purpleBounce.tscn" id="4_wg7ri"]
+[ext_resource type="PackedScene" path="res://Elements/purpleBounce.tscn" id="4_wg7ri"]
 
 [node name="level1-3" instance=ExtResource("1_lg50c")]
-script = ExtResource("2_ypk02")
+target_score = 40
+max_batting_count = 4
 
 [node name="background" parent="Border" index="0"]
 offset_left = 112.0
@@ -31,12 +31,13 @@ position = Vector2(800, 480)
 [node name="ObjectBall" parent="." index="2"]
 position = Vector2(672, 296)
 
-[node name="BonusArea" parent="." index="3" groups=["score15"]]
+[node name="BonusArea" parent="." index="3"]
 position = Vector2(760, 752)
 scale = Vector2(0.7633, 0.783704)
 
-[node name="BonusArea2" parent="." index="4" groups=["score10"]]
+[node name="BonusArea2" parent="." index="4"]
 position = Vector2(320, 336)
+metadata/score = 15
 
 [node name="BlueBounce" parent="." index="5" instance=ExtResource("3_wvvlj")]
 position = Vector2(560, 152)

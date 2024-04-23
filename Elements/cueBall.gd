@@ -1,6 +1,5 @@
 extends RigidBody2D
 
-@onready var time:= $Timer
 
 @export var custom_color := Color.ANTIQUE_WHITE;
 @export var is_level := true
@@ -18,13 +17,14 @@ const MAX_RADIUS := 324
 var _velocity := Vector2(0.0, 0.0)
 var _pole_select: PoleSelect = PoleSelect.HIGH
 
+
 func _ready() -> void:
 	$Sprite2D.material.set_shader_parameter("custom_color", Vector3(custom_color.r, custom_color.g, custom_color.b))
 	if get_parent() is Level:
 		var main_node = get_parent().get_node("Main")
 		print("这个是哪个",main_node)
 		main_node.connect("selected_pole", _on_main_selected_pole)
-			
+
 func _physics_process(_delta: float) -> void:
 	_cue_position()
 
@@ -32,7 +32,7 @@ func _cue_position() -> void:
 	var l_mouse_position := get_local_mouse_position()
 	$Mouse.position = l_mouse_position if l_mouse_position.length() < MAX_RADIUS else l_mouse_position.normalized() * MAX_RADIUS
 	$Mouse/Line.points = [$Mouse.position * 0.8, ($Mouse.position - $Mouse.position.normalized() * 38.0) * -1.0]
-		
+
 func _in_running() -> void:
 	var g_mouse_position := get_global_mouse_position()
 	_velocity = g_mouse_position - position if (position - g_mouse_position).length() < MAX_RADIUS else (g_mouse_position - position).normalized() * MAX_RADIUS
@@ -40,7 +40,6 @@ func _in_running() -> void:
 	$Mouse.hide()
 
 func _wait_to_inactive() -> void:
-	print("传递了吗b")
 	$Mouse.hide()
 
 func _inactive_to_wait() -> void:
@@ -69,19 +68,12 @@ func _on_body_entered(body) -> void:
 # 母球撞到的类型是其他刚体球
 func _collison_to_object_ball() ->void:
 	match _pole_select:
-		PoleSelect.HIGH:
-			pass
 		PoleSelect.LOW:
 			apply_central_impulse(-_velocity * 8)
 		PoleSelect.MEDIUM:
 			apply_central_impulse(-_velocity * 4)
 		_:
 			print("Unknown pole")
-	#_is_accept_ball_collision = false
-	#time.start(2)
-#
-#func _on_timer_timeout():
-	#_is_accept_ball_collision = true
 
 #func _on_body_exited(body):
 	#linear_velocity = _velocity

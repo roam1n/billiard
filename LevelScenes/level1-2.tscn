@@ -1,6 +1,6 @@
-[gd_scene load_steps=15 format=3 uid="uid://cshgvertebhpn"]
+[gd_scene load_steps=15 format=3 uid="uid://dmf6we6ophe2"]
 
-[ext_resource type="Script" path="res://LevelScenes/level1-2.gd" id="1_kucw3"]
+[ext_resource type="Script" path="res://LevelScenes/level.gd" id="1_y66pt"]
 [ext_resource type="Script" path="res://scripts/border.gd" id="2_3gqeo"]
 [ext_resource type="PackedScene" uid="uid://buomutnqf16ej" path="res://Elements/cueBall.tscn" id="3_wh2t3"]
 [ext_resource type="Script" path="res://scripts/camera2D.gd" id="4_osy7y"]
@@ -26,7 +26,8 @@ size = Vector2(1452, 300)
 size = Vector2(300, 948)
 
 [node name="level1-2" type="Node2D"]
-script = ExtResource("1_kucw3")
+script = ExtResource("1_y66pt")
+target_score = 30
 
 [node name="Border" type="StaticBody2D" parent="."]
 unique_name_in_owner = true
@@ -78,12 +79,13 @@ script = ExtResource("4_osy7y")
 [node name="ObjectBall" parent="." instance=ExtResource("5_ueugh")]
 position = Vector2(720, 446)
 
-[node name="10_Score_BonusArea" parent="." groups=["score10"] instance=ExtResource("6_5tq4n")]
+[node name="10_Score_BonusArea" parent="." instance=ExtResource("6_5tq4n")]
 position = Vector2(306, 305)
 
-[node name="15_Score_BonusArea" parent="." groups=["score15"] instance=ExtResource("6_5tq4n")]
+[node name="15_Score_BonusArea" parent="." instance=ExtResource("6_5tq4n")]
 position = Vector2(1189, 708)
 scale = Vector2(0.692364, 0.667465)
+metadata/score = 15
 
 [node name="5_Score_Bounce" parent="." instance=ExtResource("7_2r44h")]
 position = Vector2(394, 141)

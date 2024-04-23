@@ -39,7 +39,7 @@ func _get_first_level_scene() -> String:
 	#第一关路径
 	first_level_path = level_file_path + level_file_list[0]
 	return first_level_path
-	
+
 func _get_all_level() ->void:
 	if not method_executed:
 		var dir = DirAccess.open(level_file_path)
@@ -57,4 +57,4 @@ func _get_all_level() ->void:
 					level_base_name_list.append(base_name)
 				file_name = dir.get_next()
 		method_executed = true
-	
+
