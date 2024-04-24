@@ -21,7 +21,6 @@ var _batting_score := 0
 var _batting_count := 0
 var game_state: Status = Status.WAITING
 
-
 signal level_to_main_score_completed(batting_score)
 signal level_to_main_count_completed(batting_count)
 signal level_to_main_done(batting_score, batting_count, is_success)
@@ -30,11 +29,11 @@ signal level_to_main_inactive
 
 func _ready() -> void:
 	set_process(true)
-	var main_node = get_node("Main")
-	if main_node.is_connected("selected_finish",_on_main_selected_finish):
-		main_node.disconnect("selected_finish", _on_main_selected_finish)
-	else:
-		main_node.connect("selected_finish", _on_main_selected_finish)
+	#var main_node = get_node("Main")
+	#if main_node.is_connected("selected_finish",_on_main_selected_finish):
+		#main_node.disconnect("selected_finish", _on_main_selected_finish)
+	#else:
+	$Main.selected_finish.connect(_on_main_selected_finish)
 
 func _process(_delta) -> void:
 	match game_state:
@@ -75,7 +74,7 @@ func subtotal() -> void:
 			_is_success = true
 			_subtotal_to_done()
 			print("闯关成功")
-		elif  _batting_count >= max_batting_count:
+		elif _batting_count >= max_batting_count:
 			_is_success = false
 			_subtotal_to_done()
 			print("闯关失败")
@@ -137,11 +136,3 @@ func _score_subtotal() -> void:
 
 func _on_main_selected_finish(is_time_stop) -> void:
 	_is_time_stop = is_time_stop # Replace with function body.
-	
-func _on_blue_bounce_body_entered(_body) -> void:
-	_batting_score += 5
-	level_to_main_score_completed.emit(_batting_score)
-
-func _on_purple_bounce_body_entered(_body):
-	_batting_score += -5
-	level_to_main_score_completed.emit(_batting_score)

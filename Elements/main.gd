@@ -8,15 +8,16 @@ extends CanvasLayer
 @onready var success_or_fail_label: Label = %Label
 
 signal selected_pole(pole:PoleSelect)
-signal selected_finish(_is_time_stop:bool)
+signal selected_finish(is_time_stop:bool)
 
 enum PoleSelect {HIGH, MEDIUM, LOW, JUMP, NONE}
 
+var level_name:StringName = ""
 var _is_selecting:bool = false
 var _selected_pole := PoleSelect.HIGH
 var _pole_nodes := []
-var level_name:StringName = ""
 var _is_time_stop := false
+
 
 func _ready() -> void:
 	level_complete.hide()
@@ -29,8 +30,8 @@ func _ready() -> void:
 	if level_node:
 		level_node.level_to_main_score_completed.connect(_change_batting_score_label)
 		level_node.level_to_main_count_completed.connect(_change_batting_count_label)
-		level_node.level_to_main_done.connect(_level_done)
 		level_node.level_to_main_inactive.connect(_ball_inactive_player_select)
+		level_node.level_to_main_done.connect(_level_done)
 
 	restart_btn.pressed.connect(
 		func() -> void:
