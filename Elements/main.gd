@@ -8,7 +8,6 @@ extends CanvasLayer
 @onready var success_or_fail_label: Label = %Label
 
 signal selected_pole(pole:PoleSelect)
-signal selected_finish(is_time_stop:bool)
 
 enum PoleSelect {HIGH, MEDIUM, LOW, JUMP, NONE}
 
@@ -16,7 +15,6 @@ var level_name:StringName = ""
 var _is_selecting:bool = false
 var _selected_pole := PoleSelect.HIGH
 var _pole_nodes := []
-var _is_time_stop := false
 
 
 func _ready() -> void:
@@ -26,12 +24,6 @@ func _ready() -> void:
 	%LevelName.set_text(level_name)
 	_pole_nodes = [%HigtPole, %MediumPole, %LowPole, %JumpPole]
 	_on_select_pole()
-	var level_node:Node = get_parent()
-	if level_node:
-		level_node.level_to_main_score_completed.connect(_change_batting_score_label)
-		level_node.level_to_main_count_completed.connect(_change_batting_count_label)
-		level_node.level_to_main_inactive.connect(_ball_inactive_player_select)
-		level_node.level_to_main_done.connect(_level_done)
 
 	restart_btn.pressed.connect(
 		func() -> void:
@@ -44,14 +36,13 @@ func _ready() -> void:
 			level_complete.hide()
 	)
 
-func _ball_inactive_player_select() -> void:
+func _on_player_selection_in_progress() -> void:
 	_is_selecting = true
 	_all_show_pole_buttons()
 
 func _on_select_pole() -> void:
 	_only_show_selected_pole(_selected_pole)
 	selected_pole.emit(_selected_pole)
-	selected_finish.emit(_is_time_stop)
 
 func _all_show_pole_buttons() -> void:
 	for node in _pole_nodes:
@@ -81,18 +72,22 @@ func _on_jump_pole_button_down() -> void:
 	_selected_pole = PoleSelect.JUMP
 	_on_select_pole()
 
-func _change_batting_score_label(new_batting_score) -> void:
+func change_batting_score_label(new_batting_score: int) -> void:
 	batting_score.set_text("得分：%d" % new_batting_score)
 	print("updated_score")
 
-func _change_batting_count_label(new_batting_count) -> void:
+func change_batting_count_label(new_batting_count: int) -> void:
 	batting_count.set_text("次数：%d" % new_batting_count)
 	print("updated_count")
 
-func _level_done(_batting_score, _batting_count, _is_level_success) -> void:
-	show_popup_game_over(_is_level_success)
-	SaverLoader.save_game(level_name, _batting_score, _batting_count, _is_level_success)
-	print("level done:",level_name)
+func game_success(level_score:int, level_count:int) -> void:
+	success_or_fail_label.text = "过关啦"
+	level_complete.show()
+	SaverLoader.save_game(level_name, level_score, level_count, true)
+
+func game_fail() -> void:
+	success_or_fail_label.text = "还差一点儿"
+	level_complete.show()
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://start.tscn")

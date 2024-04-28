@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://dq24wivnkw8rp"]
+[gd_scene load_steps=5 format=3 uid="uid://dq24wivnkw8rp"]
 
 [ext_resource type="PackedScene" uid="uid://dca11vlumvg72" path="res://LevelScenes/level.tscn" id="1_lg50c"]
 [ext_resource type="PackedScene" uid="uid://dyihloleqtdfb" path="res://Elements/blueBonusLine.tscn" id="2_we3tm"]
 [ext_resource type="PackedScene" uid="uid://dbe7pm6lx7lh" path="res://Elements/purpleBounsLine.tscn" id="3_kabb3"]
+[ext_resource type="Script" path="res://scripts/stateMachine.gd" id="4_ekgc8"]
 
 [node name="level1-3" instance=ExtResource("1_lg50c")]
 target_score = 40
@@ -65,3 +66,6 @@ rotation = -0.488692
 
 [node name="PurpleBounsLine5" parent="." index="10" instance=ExtResource("3_kabb3")]
 position = Vector2(905, 303)
+
+[node name="StateMachine" type="Node" parent="." index="12"]
+script = ExtResource("4_ekgc8")

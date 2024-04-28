@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://buomutnqf16ej"]
+[gd_scene load_steps=12 format=3 uid="uid://buomutnqf16ej"]
 
 [ext_resource type="Script" path="res://Elements/cueBall.gd" id="1_lokwv"]
 [ext_resource type="Shader" path="res://resources/ball.gdshader" id="2_cdw4d"]
@@ -6,6 +6,7 @@
 [ext_resource type="Shader" uid="uid://b06mqbbofqqob" path="res://resources/mouse.tres" id="4_3f280"]
 [ext_resource type="Texture2D" uid="uid://ch37lfi4y62o2" path="res://assets/add.png" id="4_8xufb"]
 [ext_resource type="PackedScene" uid="uid://cdvpwuijjlnbp" path="res://Elements/collisionBonus.tscn" id="6_8kjcw"]
+[ext_resource type="Script" path="res://scripts/stateMachine.gd" id="7_qlb7f"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_x2pu7"]
 friction = 0.2
@@ -50,5 +51,8 @@ points = PackedVector2Array(0, 0, 300, 0)
 width = 4.0
 
 [node name="CollisionBonus" parent="." instance=ExtResource("6_8kjcw")]
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("7_qlb7f")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

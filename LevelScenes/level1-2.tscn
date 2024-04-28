@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dmf6we6ophe2"]
+[gd_scene load_steps=16 format=3 uid="uid://dmf6we6ophe2"]
 
 [ext_resource type="Script" path="res://LevelScenes/level.gd" id="1_y66pt"]
 [ext_resource type="Script" path="res://scripts/border.gd" id="2_3gqeo"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://bkg17ao76swlq" path="res://Elements/main.tscn" id="7_mjt31"]
 [ext_resource type="PackedScene" uid="uid://dyihloleqtdfb" path="res://Elements/blueBonusLine.tscn" id="9_03bnq"]
 [ext_resource type="PackedScene" uid="uid://bsddgwvjiiky0" path="res://Elements/whiteBounsLine.tscn" id="10_8ww1r"]
+[ext_resource type="Script" path="res://scripts/stateMachine.gd" id="10_qr0h0"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wom6v"]
 bounce = 0.3
@@ -103,3 +104,6 @@ position = Vector2(707, 510)
 scale = Vector2(0.5, 1.2)
 
 [node name="Main" parent="." instance=ExtResource("7_mjt31")]
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("10_qr0h0")

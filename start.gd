@@ -13,8 +13,6 @@ func _ready() -> void:
 	continue_scene = SaverLoader._get_first_level_scene()
 
 func _physics_process(_delta:float) -> void:
-	if Input.is_action_just_pressed("left_mouse"):
-		cueball._in_running()
 	if next_scene:
 		print(next_scene)
 		cueball.queue_free()

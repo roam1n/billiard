@@ -1,121 +1,91 @@
 extends Node2D
 class_name Level
 
-enum Status{
-	WAITING,
-	RUNNING,
-	SUBTOTAL,
-	INACTIVE,
-	DONE
-}
+@onready var cue_ball: RigidBody2D = $CueBall
+@onready var main: CanvasLayer = $Main
+@onready var state_machine: StateMachine = $StateMachine
 
-@onready var cueball: RigidBody2D = $CueBall
+enum State {
+	PLAYING,
+	SCORE_CALC,
+	SCORE_COMPLETED,
+	SELECT_INPROGRESS,
+	SELECT_DONE,
+	SUCCESS,
+	FAIL
+}
 
 @export var target_score: int = 10
 @export var max_batting_count: int = 2
 
-var _is_time_stop := false
-var _is_calculating_subtotal := false
-var _is_success := false
 var _batting_score := 0
 var _batting_count := 0
-var game_state: Status = Status.WAITING
+var game_state: State = State.PLAYING
 
-signal level_to_main_score_completed(batting_score)
-signal level_to_main_count_completed(batting_count)
-signal level_to_main_done(batting_score, batting_count, is_success)
-signal level_to_main_inactive
+signal action_restored
+signal updated_score(batting_score: int)
+signal selection_in_progress
+signal selection_done(pole: int)
+signal game_success(batting_score:int, batting_count:int)
+signal game_fail
 
 
 func _ready() -> void:
-	set_process(true)
-	#var main_node = get_node("Main")
-	#if main_node.is_connected("selected_finish",_on_main_selected_finish):
-		#main_node.disconnect("selected_finish", _on_main_selected_finish)
-	#else:
-	$Main.selected_finish.connect(_on_main_selected_finish)
+	# level根节点、子节点之间的信号连接
+	cue_ball.about_to_stop.connect(_on_cue_ball_to_stop)
+	action_restored.connect(cue_ball._on_level_action_restored)
+	updated_score.connect(main.change_batting_score_label)
+	selection_in_progress.connect(main._on_player_selection_in_progress)
+	selection_done.connect(cue_ball._on_main_selected_pole)
+	game_success.connect(main.game_success)
+	game_fail.connect(main.game_fail)
+	main.selected_pole.connect(_on_selected_pole)
 
-func _process(_delta) -> void:
-	match game_state:
-		Status.WAITING:
-			waiting()
-		Status.RUNNING:
-			running()
-		Status.INACTIVE:
-			inactive()
-		Status.SUBTOTAL:
-			subtotal()
+func get_next_state(state: State) -> int:
+	match state:
+		State.PLAYING:
+			if Input.is_action_just_pressed("right_mouse"):
+				return State.SELECT_INPROGRESS
+		State.SCORE_CALC:
+			return State.SCORE_COMPLETED
+		State.SCORE_COMPLETED:
+			if _batting_score >= target_score:
+				#print("闯关成功")
+				return State.SUCCESS
+			elif _batting_count >= max_batting_count:
+				#print("闯关失败")
+				return State.FAIL
+			else:
+				#print("继续游戏")
+				return State.PLAYING
+		State.SELECT_DONE:
+			return State.PLAYING
+	
+	return state
 
-func get_batting_count_value() -> int:
-	var value: int = _batting_count
-	return value
+func transition_state(from:State, to:State) -> void:
+	match to :
+		State.PLAYING:
+			print("from:  ", from)
+			if from == State.SELECT_DONE:
+				Engine.time_scale = 1
+			action_restored.emit()
+		State.SCORE_COMPLETED:
+			_score_subtotal()
+		State.SELECT_INPROGRESS:
+			Engine.time_scale = 0
+			selection_in_progress.emit()
+		State.SUCCESS:
+			game_success.emit(_batting_score, _batting_count)
+		State.FAIL:
+			game_fail.emit(_batting_score, _batting_count)
 
-func waiting() -> void:
-	if Input.is_action_just_pressed("left_mouse"):
-		_wait_to_running()
-	if Input.is_action_just_pressed("right_mouse"):
-		_wait_to_inactive()
+func _on_cue_ball_to_stop() -> void:
+	state_machine.current_state = State.SCORE_CALC
 
-func running() -> void:
-	if cueball.linear_velocity.length() < 5:
-		_running_to_subtotal()
-		if Input.is_action_just_pressed("right_mouse"):
-			_wait_to_inactive()
-
-func inactive() -> void:
-	if not _is_time_stop and cueball.linear_velocity.length() < 10:
-		_inactive_to_wait()
-	elif not _is_time_stop:
-		_inactive_to_running()
-
-func subtotal() -> void:
-	if not _is_calculating_subtotal:
-		if _batting_score >= target_score:
-			_is_success = true
-			_subtotal_to_done()
-			print("闯关成功")
-		elif _batting_count >= max_batting_count:
-			_is_success = false
-			_subtotal_to_done()
-			print("闯关失败")
-		else:
-			_subtotal_to_wait()
-			print("继续统计")
-
-func _wait_to_running() -> void: 
-	game_state = Status.RUNNING
-	cueball._in_running()
-
-func _running_to_subtotal() -> void:
-	game_state = Status.SUBTOTAL
-	_is_calculating_subtotal = true
-	_score_subtotal()
-	_is_calculating_subtotal = false
-
-func _wait_to_inactive() -> void:
-	Engine.time_scale = 0
-	_is_time_stop = true
-	game_state = Status.INACTIVE
-	cueball._wait_to_inactive()
-	level_to_main_inactive.emit()
-
-func _inactive_to_wait() -> void:
-	Engine.time_scale = 1
-	game_state = Status.WAITING
-	cueball._inactive_to_wait()
-
-func _inactive_to_running() -> void:
-	Engine.time_scale = 1
-	game_state = Status.RUNNING
-	cueball._in_running()
-
-func _subtotal_to_done() -> void:
-	game_state = Status.DONE
-	level_to_main_done.emit(_batting_score, _batting_count, _is_success)
-
-func _subtotal_to_wait() -> void:
-	game_state = Status.WAITING
-	cueball._subtotal_to_wait()
+func _on_selected_pole(pole: int) -> void:
+	selection_done.emit(pole)
+	state_machine.current_state = State.SELECT_DONE
 
 func _score_subtotal() -> void:
 	print("stop running")
@@ -130,9 +100,7 @@ func _score_subtotal() -> void:
 						ball.queue_free()
 	_batting_score += score
 	_batting_count += 1
-	#给Main发信号更新分数
-	level_to_main_score_completed.emit(_batting_score)
-	level_to_main_count_completed.emit(_batting_count)
-
-func _on_main_selected_finish(is_time_stop) -> void:
-	_is_time_stop = is_time_stop # Replace with function body.
+	#更新main击打次数数值
+	main.change_batting_count_label(_batting_count)
+	#发布得分更新
+	updated_score.emit(_batting_score)

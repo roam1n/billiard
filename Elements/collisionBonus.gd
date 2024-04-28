@@ -8,4 +8,4 @@ func _ready() -> void:
 func _on_ball_body_entered(body: Node) -> void:
 	if owner.owner is Level and body.is_in_group("bonusLine"):
 		owner.owner._batting_score += body.get_meta("score")
-		owner.owner.level_to_main_score_completed.emit(owner.owner._batting_score)
+		owner.owner.updated_score.emit(owner.owner._batting_score)
