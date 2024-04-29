@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4dj84l1ykuuh"]
+
+[ext_resource type="Script" path="res://Elements/selectLevel.gd" id="1_qj2g5"]
+
+[node name="SelectLevel" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 6.10352e-05
+offset_right = 6.10352e-05
+scale = Vector2(1.4613, 1.3532)
+script = ExtResource("1_qj2g5")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1184.0
+offset_bottom = 720.0
+color = Color(0.0823529, 0.0823529, 0.0823529, 1)
+
+[node name="LevelButtonsGrid" type="GridContainer" parent="."]
+layout_mode = 0
+offset_right = 1184.0
+offset_bottom = 720.0

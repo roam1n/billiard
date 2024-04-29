@@ -1,7 +1,7 @@
 extends Node2D
 
 
-@export var custom_color: Color = Color.CORAL;
+@export var custom_color:Color = Color.CORAL;
 
 var shader_resource:Shader = preload("res://resources/ball.gdshader")
 

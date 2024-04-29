@@ -1,43 +1,44 @@
 extends CanvasLayer
 
-# Main的父节点一定是level
-
 @onready var batting_score: Label = %BattingScore
 @onready var batting_count: Label = %BattingCount
 @onready var level_complete: PanelContainer = %LevelComplete
+@onready var restart_btn: Button = %Restart 
+@onready var next_btn: Button = %Next
+@onready var success_or_fail_label: Label = %Label
 
 signal selected_pole(pole:PoleSelect)
-signal subtotal_completed
-#signal level_completed
 
 enum PoleSelect {HIGH, MEDIUM, LOW, JUMP, NONE}
 
+var level_name:StringName = ""
 var _is_selecting:bool = false
 var _selected_pole := PoleSelect.HIGH
-var _batting_score := 0
-var _batting_count := 0
 var _pole_nodes := []
-var level_name:StringName = "1-1"
+
 
 func _ready() -> void:
 	level_complete.hide()
 	level_name = get_parent().name
+	print("打印当前关卡:", level_name)
 	%LevelName.set_text(level_name)
 	_pole_nodes = [%HigtPole, %MediumPole, %LowPole, %JumpPole]
 	_on_select_pole()
 
-# level scene 中绑定 cueBall 信号 ball_inactive
-func _on_cut_ball_ball_inactive() -> void:
+	restart_btn.pressed.connect(
+		func() -> void:
+			load_level()
+			level_complete.hide()
+	)
+	next_btn.pressed.connect(
+		func() -> void:
+			get_next_level()
+			level_complete.hide()
+	)
+
+func _on_player_selection_in_progress() -> void:
 	_is_selecting = true
 	_all_show_pole_buttons()
-
-# level scene 中绑定 cueBall 信号 ball_running
-func _on_cut_ball_running() -> void:
-	_change_batting_count_label()
-
-func _change_batting_count_label() -> void:
-	_batting_count += 1
-	batting_count.set_text("次数：%d" % _batting_count)
 
 func _on_select_pole() -> void:
 	_only_show_selected_pole(_selected_pole)
@@ -71,34 +72,37 @@ func _on_jump_pole_button_down() -> void:
 	_selected_pole = PoleSelect.JUMP
 	_on_select_pole()
 
-# 每次击球后，计算得分并更新label
-func _on_cut_ball_stop_running() -> void:
-	_score_subtotal()
-	_change_batting_score_label()
-	print("stop running")
-
-func _score_subtotal() -> void:
-	var score := 0
-	for node in get_tree().get_nodes_in_group("bonusAreas"):
-		if node as Area2D:
-			for ball in node.get_overlapping_bodies():
-				print(ball)
-				if ball.is_in_group("balls"):
-					score += 10
-					if ball.is_in_group("objectBalls"):
-						# 销毁已得分的子球
-						ball.queue_free()
-	_batting_score += score
-	subtotal_completed.emit()
-
-func _change_batting_score_label() -> void:
-	batting_score.set_text("得分：%d" % _batting_score)
+func change_batting_score_label(new_batting_score: int) -> void:
+	batting_score.set_text("得分：%d" % new_batting_score)
 	print("updated_score")
 
-func _on_cut_ball_done() -> void:
+func change_batting_count_label(new_batting_count: int) -> void:
+	batting_count.set_text("次数：%d" % new_batting_count)
+	print("updated_count")
+
+func game_success(level_score:int, level_count:int) -> void:
+	success_or_fail_label.text = "过关啦"
 	level_complete.show()
-	SaverLoader.save_game(level_name, _batting_score, _batting_count)
-	print("level done")
+	SaverLoader.save_game(level_name, level_score, level_count, true)
+
+func game_fail() -> void:
+	success_or_fail_label.text = "还差一点儿"
+	level_complete.show()
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://start.tscn")
+
+func show_popup_game_over(is_level_success: bool) -> void:
+	success_or_fail_label.text = "过关啦" if is_level_success else "失败啦"
+	level_complete.show()
+
+func get_next_level() -> void:
+	print("当前关卡:", level_name)
+	var next_level:StringName = SaverLoader.next_level(level_name)
+	print("下一关卡:", next_level)
+	call_deferred("queue_free")
+	var new_scene_path:String = "res://LevelScenes/" + next_level + ".tscn"
+	get_tree().change_scene_to_file(new_scene_path)
+
+func load_level() -> void:
+	get_tree().reload_current_scene()

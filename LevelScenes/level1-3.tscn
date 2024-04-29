@@ -1,0 +1,71 @@
+[gd_scene load_steps=5 format=3 uid="uid://dq24wivnkw8rp"]
+
+[ext_resource type="PackedScene" uid="uid://dca11vlumvg72" path="res://LevelScenes/level.tscn" id="1_lg50c"]
+[ext_resource type="PackedScene" uid="uid://dyihloleqtdfb" path="res://Elements/blueBonusLine.tscn" id="2_we3tm"]
+[ext_resource type="PackedScene" uid="uid://dbe7pm6lx7lh" path="res://Elements/purpleBounsLine.tscn" id="3_kabb3"]
+[ext_resource type="Script" path="res://scripts/stateMachine.gd" id="4_ekgc8"]
+
+[node name="level1-3" instance=ExtResource("1_lg50c")]
+target_score = 40
+max_batting_count = 4
+
+[node name="Border" parent="." index="0"]
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
+
+[node name="background" parent="Border" index="0"]
+offset_left = 112.0
+offset_right = 1264.0
+scale = Vector2(1.17141, 1.08926)
+
+[node name="top" parent="Border" index="1"]
+position = Vector2(939.5, -32)
+
+[node name="right" parent="Border" index="2"]
+position = Vector2(1616, 626.75)
+
+[node name="bottom" parent="Border" index="3"]
+position = Vector2(634.25, 984)
+
+[node name="left" parent="Border" index="4"]
+position = Vector2(-40, 327)
+
+[node name="CueBall" parent="." index="1"]
+position = Vector2(800, 480)
+
+[node name="ObjectBall" parent="." index="2"]
+position = Vector2(672, 296)
+
+[node name="BonusArea" parent="." index="3"]
+position = Vector2(760, 752)
+scale = Vector2(0.7633, 0.783704)
+metadata/score = 15
+
+[node name="BonusArea2" parent="." index="4"]
+position = Vector2(320, 336)
+
+[node name="blueBonusLine" parent="." index="5" instance=ExtResource("2_we3tm")]
+position = Vector2(688, 131)
+rotation = 1.5708
+scale = Vector2(0.7, 1.3)
+
+[node name="PurpleBounsLine" parent="." index="6" instance=ExtResource("3_kabb3")]
+position = Vector2(859, 578)
+rotation = 1.5708
+
+[node name="PurpleBounsLine2" parent="." index="7" instance=ExtResource("3_kabb3")]
+position = Vector2(530, 313)
+
+[node name="PurpleBounsLine3" parent="." index="8" instance=ExtResource("3_kabb3")]
+position = Vector2(1151, 619)
+rotation = 0.488692
+
+[node name="PurpleBounsLine4" parent="." index="9" instance=ExtResource("3_kabb3")]
+position = Vector2(310, 646)
+rotation = -0.488692
+
+[node name="PurpleBounsLine5" parent="." index="10" instance=ExtResource("3_kabb3")]
+position = Vector2(905, 303)
+
+[node name="StateMachine" type="Node" parent="." index="12"]
+script = ExtResource("4_ekgc8")

@@ -1,0 +1,109 @@
+[gd_scene load_steps=16 format=3 uid="uid://dmf6we6ophe2"]
+
+[ext_resource type="Script" path="res://LevelScenes/level.gd" id="1_y66pt"]
+[ext_resource type="Script" path="res://scripts/border.gd" id="2_3gqeo"]
+[ext_resource type="PackedScene" uid="uid://buomutnqf16ej" path="res://Elements/cueBall.tscn" id="3_wh2t3"]
+[ext_resource type="Script" path="res://scripts/camera2D.gd" id="4_osy7y"]
+[ext_resource type="PackedScene" uid="uid://270fi8jto1i5" path="res://Elements/objectBall.tscn" id="5_ueugh"]
+[ext_resource type="PackedScene" uid="uid://cntlro8d45gwl" path="res://Elements/bonusArea.tscn" id="6_5tq4n"]
+[ext_resource type="PackedScene" uid="uid://bkg17ao76swlq" path="res://Elements/main.tscn" id="7_mjt31"]
+[ext_resource type="PackedScene" uid="uid://dyihloleqtdfb" path="res://Elements/blueBonusLine.tscn" id="9_03bnq"]
+[ext_resource type="PackedScene" uid="uid://bsddgwvjiiky0" path="res://Elements/whiteBounsLine.tscn" id="10_8ww1r"]
+[ext_resource type="Script" path="res://scripts/stateMachine.gd" id="10_qr0h0"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wom6v"]
+bounce = 0.3
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rb8hr"]
+size = Vector2(1452, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c60rx"]
+size = Vector2(300, 948)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c23sq"]
+size = Vector2(1452, 300)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vfe35"]
+size = Vector2(300, 948)
+
+[node name="level1-2" type="Node2D"]
+script = ExtResource("1_y66pt")
+target_score = 30
+
+[node name="Border" type="StaticBody2D" parent="."]
+unique_name_in_owner = true
+physics_material_override = SubResource("PhysicsMaterial_wom6v")
+script = ExtResource("2_3gqeo")
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="background" type="ColorRect" parent="Border"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 120.0
+offset_top = 120.0
+offset_right = 1272.0
+offset_bottom = 768.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+color = Color(0.054902, 0.109804, 0.109804, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="top" type="CollisionShape2D" parent="Border"]
+position = Vector2(846, -30)
+shape = SubResource("RectangleShape2D_rb8hr")
+
+[node name="right" type="CollisionShape2D" parent="Border"]
+position = Vector2(1422, 594)
+shape = SubResource("RectangleShape2D_c60rx")
+
+[node name="bottom" type="CollisionShape2D" parent="Border"]
+position = Vector2(546, 918)
+shape = SubResource("RectangleShape2D_c23sq")
+
+[node name="left" type="CollisionShape2D" parent="Border"]
+position = Vector2(-30, 294)
+shape = SubResource("RectangleShape2D_vfe35")
+
+[node name="CueBall" parent="." instance=ExtResource("3_wh2t3")]
+position = Vector2(859, 546)
+custom_color = Color(0.980392, 0.921569, 0.843137, 1)
+
+[node name="Camera2D" type="Camera2D" parent="CueBall"]
+position = Vector2(-34, -114)
+limit_smoothed = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+script = ExtResource("4_osy7y")
+
+[node name="ObjectBall" parent="." instance=ExtResource("5_ueugh")]
+position = Vector2(720, 446)
+
+[node name="10_Score_BonusArea" parent="." instance=ExtResource("6_5tq4n")]
+position = Vector2(306, 305)
+
+[node name="15_Score_BonusArea" parent="." instance=ExtResource("6_5tq4n")]
+position = Vector2(1189, 708)
+scale = Vector2(0.692364, 0.667465)
+metadata/score = 15
+
+[node name="blueBonusLine" parent="." instance=ExtResource("9_03bnq")]
+position = Vector2(545, 124)
+rotation = 1.5708
+scale = Vector2(0.5, 1.5)
+
+[node name="WhiteBounsLine" parent="." instance=ExtResource("10_8ww1r")]
+position = Vector2(707, 139)
+scale = Vector2(0.5, 1.2)
+
+[node name="WhiteBounsLine2" parent="." instance=ExtResource("10_8ww1r")]
+position = Vector2(707, 510)
+scale = Vector2(0.5, 1.2)
+
+[node name="Main" parent="." instance=ExtResource("7_mjt31")]
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("10_qr0h0")

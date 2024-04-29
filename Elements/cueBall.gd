@@ -1,105 +1,94 @@
 extends RigidBody2D
 
+@onready var state_machine: StateMachine = $StateMachine
 
 @export var custom_color := Color.ANTIQUE_WHITE;
 @export var is_level := true
 
-enum Status {WAIT, RUNNING, INACTIVE, DONE, SUBTOTAL}
-enum PoleSelect {HIGH, MEDIUM, LOW, JUMP, NONE}
+signal about_to_stop
 
-signal ball_running
-signal ball_wait
-signal ball_inactive
-signal ball_done
-signal ball_stop_running
+enum PoleSelect {HIGH, MEDIUM, LOW, JUMP, NONE}
+enum State {WAITING, RUNNING, INACTIVE, DISABLE}
 
 const SPEED := 200
 const MAX_RADIUS := 324
 var _velocity := Vector2(0.0, 0.0)
-var _status := Status.WAIT
-var _pole_select := PoleSelect.HIGH
-var _is_time_stop := false
-var _is_calculating_subtotal := false
+var _pole_select: PoleSelect = PoleSelect.HIGH
 
 
 func _ready() -> void:
+	#设置球的颜色
 	$Sprite2D.material.set_shader_parameter("custom_color", Vector3(custom_color.r, custom_color.g, custom_color.b))
 
-func _physics_process(delta: float) -> void:
-	var l_mouse_position := get_local_mouse_position()
-	$Mouse.position = l_mouse_position if l_mouse_position.length() < MAX_RADIUS else l_mouse_position.normalized() * MAX_RADIUS
-	$Mouse/Line.points = [$Mouse.position * 0.8, ($Mouse.position - $Mouse.position.normalized() * 38.0) * -1.0]
-	_transform()
+func get_next_state(state:State) -> int:
+	match state :
+		State.WAITING:
+			if Input.is_action_just_pressed("left_mouse"):
+				return State.RUNNING
+		State.RUNNING:
+			if linear_velocity.length() < 12:
+				about_to_stop.emit()
+				return State.INACTIVE
+		State.DISABLE:
+			if linear_velocity.length() < 12:
+				about_to_stop.emit()
+				return State.INACTIVE
+	return state
 
-# 什么状态在什么情况下，发生转换
-func _transform() -> void:
-	if _status == Status.WAIT:
-		if Input.is_action_just_pressed("left_mouse"):
-			_wait_to_running()
-		elif Input.is_action_just_pressed("right_mouse") and is_level:
-			_wait_to_inactive()
-	elif _status == Status.RUNNING:
-		if linear_velocity.length() < 20:
-			_running_to_subtotal()
-		elif Input.is_action_just_pressed("right_mouse") and is_level:
-			_wait_to_inactive()
-	elif _status == Status.INACTIVE:
-		if not _is_time_stop and linear_velocity.length() < 20:
-			_inactive_to_wait()
-		elif not _is_time_stop:
-			_inactive_to_running()
-	elif _status == Status.SUBTOTAL:
-		if not _is_calculating_subtotal:
-			if len(get_tree().get_nodes_in_group("objectBalls")) > 0:
-				_subtotal_to_wait()
-			else:
-				_subtotal_to_done()
+func transition_state(_from:State, to:State) -> void:
+	match to :
+		State.WAITING:
+			$Mouse.show()
+		State.RUNNING:
+			var g_mouse_position := get_global_mouse_position()
+			_velocity = g_mouse_position - position if (position - g_mouse_position).length() < MAX_RADIUS else (g_mouse_position - position).normalized() * MAX_RADIUS
+			linear_velocity = _velocity * 4.5
+			$Mouse.hide()
+		State.INACTIVE:
+			$Mouse.hide()
+		State.DISABLE:
+			$Mouse.hide()
 
-func _wait_to_running():
-	_status = Status.RUNNING
-	ball_running.emit()
-	var g_mouse_position := get_global_mouse_position()
-	_velocity = g_mouse_position - position if (position - g_mouse_position).length() < MAX_RADIUS else (g_mouse_position - position).normalized() * MAX_RADIUS
-	linear_velocity = _velocity * 4.5
-	$Mouse.hide()
+func _on_level_action_restored() -> void:
+	if linear_velocity.length() > 12:
+		state_machine.current_state = State.DISABLE
+	else:
+		state_machine.current_state = State.WAITING
 
-func _running_to_subtotal():
-	_status = Status.SUBTOTAL
-	_is_calculating_subtotal = true
-	ball_stop_running.emit()
+func tick_physics(state:State) -> void:
+	match state :
+		State.WAITING:
+			# 实时更新辅助线
+			var l_mouse_position := get_local_mouse_position()
+			$Mouse.position = l_mouse_position if l_mouse_position.length() < MAX_RADIUS else l_mouse_position.normalized() * MAX_RADIUS
+			$Mouse/Line.points = [$Mouse.position * 0.8, ($Mouse.position - $Mouse.position.normalized() * 38.0) * -1.0]
 
-func _wait_to_inactive():
-	Engine.time_scale = 0
-	_is_time_stop = true
-	_status = Status.INACTIVE
-	ball_inactive.emit()
-	$Mouse.hide()
+func _on_main_selected_pole(newpole) -> void:
+	_pole_select = newpole
+	match newpole:
+		PoleSelect.HIGH:
+			print("It's an high!")
+		PoleSelect.LOW:
+			print("It's an low!")
+		PoleSelect.MEDIUM:
+			print("It's an medium!")
 
-func _inactive_to_wait():
-	Engine.time_scale = 1
-	_status = Status.WAIT
-	ball_wait.emit()
-	$Mouse.show()
+func _on_body_entered(body) -> void:
+	if body is RigidBody2D:
+		var other_rigidbody = body as RigidBody2D
+		if other_rigidbody.is_in_group("balls"):
+			print("Collision with a RigidBody2D in the specified group detected!")
+			_collison_to_object_ball()
 
-func _inactive_to_running():
-	Engine.time_scale = 1
-	_status = Status.RUNNING
-	ball_running.emit()
+# 母球撞到的类型是其他刚体球
+func _collison_to_object_ball() ->void:
+	match _pole_select:
+		PoleSelect.LOW:
+			apply_central_impulse(-_velocity * 8)
+		PoleSelect.MEDIUM:
+			apply_central_impulse(-_velocity * 4)
+		_:
+			print("Unknown pole")
 
-func _subtotal_to_done():
-	_status = Status.DONE
-	ball_done.emit()
-
-func _subtotal_to_wait():
-	_status = Status.WAIT
-	ball_wait.emit()
-	$Mouse.show()
-
-# level scene 中绑定 Main 信号 selected_pole
-func _on_main_selected_pole(pole: PoleSelect) -> void:
-	_pole_select = pole
-	_is_time_stop = false
-
-# level scene 中绑定 Main 信号 subtotal_completed
-func _on_main_subtotal_completed() -> void:
-	_is_calculating_subtotal = false
+#func _on_body_exited(body):
+	#linear_velocity = _velocity

@@ -10,6 +10,7 @@ size = Vector2(220, 160)
 shader = ExtResource("1_q607m")
 
 [node name="BonusArea" type="Area2D" groups=["bonusAreas"]]
+metadata/score = 10
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_twpir")

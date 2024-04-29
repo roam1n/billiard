@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://db8ogle58fco0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pu1gc"]
+size = Vector2(50, 200)
+
+[node name="bonusLine" type="StaticBody2D" groups=["bonusLine"]]
+metadata/score = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(25, 100)
+shape = SubResource("RectangleShape2D_pu1gc")
